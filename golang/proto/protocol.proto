@@ -1,0 +1,63 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+
+syntax = "proto3";
+package ledger_swap;
+
+option go_package = "swap.ledger.fr/proto";
+
+message NewTransactionResponse {
+    string payin_address = 1;
+    string payin_extra_id = 2;
+    string refund_address = 3;
+    string refund_extra_id = 4;
+    string payout_address = 5;
+    string payout_extra_id = 6;
+    string currency_from = 7;
+    string currency_to = 8;
+    bytes  amount_to_provider = 9;
+    bytes  amount_to_wallet = 10;
+    string device_transaction_id = 11;
+    bytes device_transaction_id_ng = 12;
+}
+
+// (coefficient) * 10^(- exponent)
+message UDecimal {
+    bytes  coefficient = 1;
+    uint32 exponent = 2;
+}
+
+message NewSellResponse {
+    string   trader_email = 1;           // traderEmail
+    string   in_currency = 2;            // inCurrency
+    bytes    in_amount = 3;              // inAmount
+    string   in_address = 4;             // account
+    string   out_currency = 5;           // outCurrency
+    UDecimal out_amount = 6;             // outAmount
+    bytes    device_transaction_id = 7;  // nonce
+}
+
+message NewFundResponse {
+    string   user_id = 1;                // user ID
+    string   account_name = 2;           // funded account name ex: Card 1234
+    string   in_currency = 3;            // inCurrency
+    bytes    in_amount = 4;              // inAmount
+    string   in_address = 5;             // account
+    bytes    device_transaction_id = 6;  // nonce
+}
