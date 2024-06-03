@@ -1,0 +1,10 @@
+{
+  "payinAddress": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+  "refundAddress": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf4teq",
+  "payoutAddress": "0xb794f5ea0ba39494ce839613fffba74279579268",
+  "currencyFrom": "BTC",
+  "currencyTo": "BAT",
+  "amountToProvider": 1150,
+  "amountToWallet": 6000000000000,
+  "nonce": "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b"
+}
