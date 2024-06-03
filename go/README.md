@@ -1,17 +1,9 @@
 # Go exchange-tool
 
 ## Compilation
-If you want to build an exec, simply: `go build -o SwapTool .`
+If you want to build an exec, simply: `make build`
 
-If you need to compile for different platform:
- * Mac : `GOOS=darwin GOARCH=amd64 go build -o SwapTool .`
- * Linux : `GOOS=linux GOARCH=amd64 go build -o SwapTool .`
-
-(both example target 64 bits architecture ; for 32 bits, use `386` value for `GOARCH` var).
-
-[Go official doc](https://go.dev/doc/install/source#environment)
-
-## Usage
+## Usage in dev
 ### Generate
 `go run . generate <CURVE> <PRIVATE_KEY> <PAYLOAD_JSON_FORMAT>`
 
