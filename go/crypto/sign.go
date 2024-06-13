@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/crypto/cryptobyte"
 	"golang.org/x/crypto/cryptobyte/asn1"
-	"swap.ledger.fr/encode"
+	"exchange.ledger.fr/encode"
 )
 
 type SignFormat string

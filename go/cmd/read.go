@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"swap.ledger.fr/encode"
+	"exchange.ledger.fr/encode"
 )
 
 var ReadCmd = &cobra.Command{

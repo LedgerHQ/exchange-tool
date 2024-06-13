@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"swap.ledger.fr/crypto"
+	"exchange.ledger.fr/crypto"
 )
 
 var SignCmd = &cobra.Command{

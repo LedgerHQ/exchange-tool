@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"swap.ledger.fr/crypto"
-	"swap.ledger.fr/encode"
+	"exchange.ledger.fr/crypto"
+	"exchange.ledger.fr/encode"
 )
 
 var curve string

@@ -20,7 +20,7 @@
 package main
 
 import (
-	"swap.ledger.fr/cmd"
+	"exchange.ledger.fr/cmd"
 
 	"github.com/spf13/cobra"
 )

@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	ethereum "github.com/ethereum/go-ethereum/crypto"
-	"swap.ledger.fr/crypto"
+	"exchange.ledger.fr/crypto"
 )
 
 const payloadBase64 = "CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs="

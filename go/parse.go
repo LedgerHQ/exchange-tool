@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"swap.ledger.fr/crypto"
+	"exchange.ledger.fr/crypto"
 )
 
 type Params struct {

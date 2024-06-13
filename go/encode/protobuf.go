@@ -7,7 +7,7 @@ import (
 	"math/big"
 
 	"google.golang.org/protobuf/proto"
-	swap "swap.ledger.fr/proto"
+	swap "exchange.ledger.fr/proto"
 )
 
 func EncodeDevicePaylod[T SwapDevicePayload | SellDevicePayload](payload T) []byte {

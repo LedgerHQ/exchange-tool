@@ -1,4 +1,4 @@
-module swap.ledger.fr
+module exchange.ledger.fr
 
 go 1.22
 

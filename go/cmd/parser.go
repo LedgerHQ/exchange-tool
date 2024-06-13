@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"swap.ledger.fr/crypto"
+	"exchange.ledger.fr/crypto"
 )
 
 type params struct {
@@ -16,6 +16,7 @@ type params struct {
 	payloadHeader   string
 	signFormat      crypto.SignFormat
 	providerName    string
+	keyType					string
 }
 
 // JWT format: <Base64Url(HEADER)>.<Base64Url(PAYLOAD)>.<Base64Url(SIGNATURE)>
