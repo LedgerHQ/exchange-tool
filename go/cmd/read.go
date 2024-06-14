@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
-	"github.com/spf13/cobra"
 	"exchange.ledger.fr/encode"
+	"github.com/spf13/cobra"
 )
 
 var ReadCmd = &cobra.Command{
@@ -14,17 +15,28 @@ var ReadCmd = &cobra.Command{
 	Run:   read,
 }
 
+func init() {
+	ReadCmd.Flags().StringP("exchangeType", "e", "", "Exchange type (i.e. swap, sell)")
+	ReadCmd.MarkFlagRequired("exchangeType")
+}
+
 func read(cmd *cobra.Command, args []string) {
 	fmt.Println("*** Extract protobuf file info ***")
-	info, format := readPayload(args[0])
+
+	exchangeType := cmd.Flags().Lookup("exchangeType").Value.String()
+	info, format := readPayload(args[0], exchangeType)
 
 	fmt.Println("--> Info (encoded format:", format, ")\n", info)
 }
 
 // Base64 decode payload and extract its info from binary result
-func readPayload(payload string) (string, encode.Base64Format) {
+func readPayload(payload string, exchangeType string) (string, encode.Base64Format) {
 	payloadByte, format := encode.CascadeDecodeBase64(payload)
-	payloadJson := encode.DecodeSwapProtobuf(payloadByte)
+	log.Println("Read results:\n", payloadByte, "\n", format)
+	payloadFormatted := encode.DecodeSwapProtobuf(payloadByte).String()
+	if exchangeType == "sell" {
+		payloadFormatted = encode.DecodeSellProtobuf(payloadByte).String()
+	}
 
-	return payloadJson.String(), format
+	return payloadFormatted, format
 }

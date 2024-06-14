@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"exchange.ledger.fr/crypto"
 	"exchange.ledger.fr/encode"
+	"github.com/spf13/cobra"
 )
 
 var curve string
@@ -82,7 +82,8 @@ func generate[T encode.SwapDevicePayload | encode.SellDevicePayload](cmd *cobra.
 func generateProtoAndSign(curve crypto.Curve, signFormat crypto.SignFormat, privFilename string, fnMarshalledFile marshalFile) (payload64 string, sign64 string) {
 	privateKey, _ := curve.ReadPrivateKey(privFilename)
 	payload64 = fileToBase64(fnMarshalledFile)
-	sign64 = crypto.SignMessageInRS(payload64, privateKey, signFormat)
+	signature := crypto.SignMessageInRS(payload64, privateKey, signFormat)
+	sign64 = encode.EncodeBase64(signature)
 	return
 }
 

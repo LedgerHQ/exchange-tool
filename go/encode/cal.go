@@ -7,6 +7,7 @@ type CalInfo struct {
 	PublicKey CalPubKey `json:"publicKey"`
 	Signature string    `json:"signature"`
 	Version   uint      `json:"version"`
+	Apdu      string    `json:"-"`
 }
 
 type CalPubKey struct {
@@ -14,7 +15,7 @@ type CalPubKey struct {
 	Data  string `json:"data"`
 }
 
-func CalFormatProviderInfo(name string, curve string, pubKey string, signApdu string) CalInfo {
+func CalFormatProviderInfo(name string, curve string, pubKey string, signApdu string, version uint, apdu string) CalInfo {
 	return CalInfo{
 		Name: name,
 		PublicKey: CalPubKey{
@@ -22,7 +23,8 @@ func CalFormatProviderInfo(name string, curve string, pubKey string, signApdu st
 			Data:  pubKey,
 		},
 		Signature: signApdu,
-		Version:   2,
+		Version:   version,
+		Apdu:      apdu,
 	}
 }
 

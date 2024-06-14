@@ -5,9 +5,10 @@ import (
 	"encoding/hex"
 	"log"
 	"math/big"
+	"strconv"
 
-	"google.golang.org/protobuf/proto"
 	swap "exchange.ledger.fr/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 func EncodeDevicePaylod[T SwapDevicePayload | SellDevicePayload](payload T) []byte {
@@ -61,6 +62,26 @@ func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionRespo
 		AmountToProvider:      bigNumberToProvider.Bytes(),
 		AmountToWallet:        bigNumberToWallet.Bytes(),
 		DeviceTransactionIdNg: nonce,
+	}
+}
+
+func DecodeSellProtobuf(payload []byte) SellDevicePayload {
+	message := swap.NewSellResponse{}
+	proto.Unmarshal(payload, &message)
+
+	inAmount := new(big.Int)
+	inAmount.SetBytes(message.InAmount)
+
+	outAmount, _ := strconv.ParseUint(message.OutAmount.String(), 10, 64)
+
+	return SellDevicePayload{
+		TraderEmail:         message.TraderEmail,
+		InCurrency:          message.InCurrency,
+		InAmount:            inAmount.Uint64(),
+		InAddress:           message.InAddress,
+		OutCurrency:         message.OutCurrency,
+		OutAmount:           outAmount,
+		DeviceTransactionId: string(message.DeviceTransactionId),
 	}
 }
 

@@ -25,7 +25,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "exchange-tool",
 	Short: "A tool for generated test data for exchange features and test it",
 	Long: `ExchangeTool is CLI for helping Exchange Developer and Ledger's partner.
@@ -33,8 +33,8 @@ It can generate test data to use in LiveApp to test app-exchange signature.
 It can check test data generate by provider to verify format and signature`,
 }
 
-func main() {
-	rootCmd.AddCommand(
+func init() {
+	RootCmd.AddCommand(
 		cmd.GenerateCmd,
 		cmd.CheckCmd,
 		cmd.ReadCmd,
@@ -42,6 +42,8 @@ func main() {
 		cmd.SignCmd,
 		cmd.CalCmd,
 	)
+}
 
-	rootCmd.Execute()
+func main() {
+	RootCmd.Execute()
 }

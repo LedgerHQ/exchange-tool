@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"exchange.ledger.fr/crypto"
 	"exchange.ledger.fr/encode"
+	"github.com/spf13/cobra"
 )
 
 var CheckCmd = &cobra.Command{

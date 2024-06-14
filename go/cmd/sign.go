@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"exchange.ledger.fr/crypto"
+	"github.com/spf13/cobra"
 )
 
 var SignCmd = &cobra.Command{
@@ -36,8 +36,8 @@ func sign(cmd *cobra.Command, args []string) {
 
 	params := convertSignParameter(cmd, args)
 
-	pubKey := params.curve.ReadPublicKey(params.pemFile)
-	signature := crypto.SignProviderInfo(params.providerName, pubKey)
+	pubKey := params.curve.ConvertPEMtoHexKey(params.pemFile)
+	_, signature := crypto.SignProviderInfo(params.providerName, pubKey, params.curve, 2)
 
 	fmt.Println("--> Signature value:\n", signature)
 }

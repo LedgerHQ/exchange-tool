@@ -16,7 +16,8 @@ type params struct {
 	payloadHeader   string
 	signFormat      crypto.SignFormat
 	providerName    string
-	keyType					string
+	keyType         string
+	version         uint
 }
 
 // JWT format: <Base64Url(HEADER)>.<Base64Url(PAYLOAD)>.<Base64Url(SIGNATURE)>

@@ -40,6 +40,8 @@ type Curve interface {
 	ReadPrivateKey(filename string) (*ecdsa.PrivateKey, error)
 	ConvertPEMtoHexKey(filename string) string
 	Name() string
+	Flag() string
+	Code() string
 }
 
 type K1Curve struct {
@@ -150,6 +152,14 @@ func (c K1Curve) Name() string {
 	return "secp256k1"
 }
 
+func (c K1Curve) Flag() string {
+	return "k1"
+}
+
+func (c K1Curve) Code() string {
+	return "00"
+}
+
 // -- R1
 type R1Curve struct {
 	Curve
@@ -170,7 +180,8 @@ func (c R1Curve) ConvertPEMtoHexKey(filename string) string {
 		log.Fatal("Error while type casting key")
 	}
 
-	return hex.EncodeToString(pubKey.X.Bytes())
+	// return hex.EncodeToString(append(pubKey.X.Bytes(), pubKey.Y.Bytes()...))
+	return hex.EncodeToString(elliptic.Marshal(elliptic.P256(), pubKey.X, pubKey.Y))
 }
 
 func (c R1Curve) ReadPrivateKey(filename string) (privKey *ecdsa.PrivateKey, err error) {
@@ -205,6 +216,21 @@ func (c R1Curve) ReadPublicKey(filename string) (pubKey *ecdsa.PublicKey) {
 	return pubKey
 }
 
+func (c R1Curve) ReadHexPublicKey(hexValue string) *ecdsa.PublicKey {
+	contentByte, err := hex.DecodeString(hexValue)
+	if err != nil {
+		log.Fatalln("Unable to decode pubkey value")
+	}
+
+	x, y := elliptic.Unmarshal(elliptic.P256(), contentByte)
+
+	return &ecdsa.PublicKey{
+		Curve: elliptic.P256(),
+		X:     x,
+		Y:     y,
+	}
+}
+
 func (c R1Curve) GeneratePrivateKey() *ecdsa.PrivateKey {
 	init := strings.NewReader("Random truc Random truc Random truc Random truc Random truc")
 
@@ -218,6 +244,14 @@ func (c R1Curve) GeneratePrivateKey() *ecdsa.PrivateKey {
 
 func (c R1Curve) Name() string {
 	return "secp256r1"
+}
+
+func (c R1Curve) Flag() string {
+	return "r1"
+}
+
+func (c R1Curve) Code() string {
+	return "01"
 }
 
 // -- Utils

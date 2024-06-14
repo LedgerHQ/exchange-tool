@@ -9,14 +9,14 @@ If you want to build an exec, simply: `make build`
 
 Example:
 
-`go run . generate k1 ../samples/sample-priv-key-secp256k1.pem payload-example.json`
+`go run . generate -c k1 -p ../samples/sample-priv-key-secp256k1.pem payload-example.json`
 
 ### Check
 `go run . check <CURVE> <PUBLIC_KEY> <BINARY_PAYLOAD_BASE64> <SIGNATURE_BASE64>`
 
 Example:
 
-`go run . check k1 ../samples/sample-pub-key-secp256k1.pem CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK 5-J8C2lb9bZj2yGWaNCjKyW15mDx3zaYc3u59Bag7t-G0-vjzpadZzWTHMGUJeY2IJMr5NxQV5RqdFemOvbaWQ==`
+`go run . check -c k1 -p ../samples/sample-pub-key-secp256k1.pem CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK 5-J8C2lb9bZj2yGWaNCjKyW15mDx3zaYc3u59Bag7t-G0-vjzpadZzWTHMGUJeY2IJMr5NxQV5RqdFemOvbaWQ==`
 
 ### Read
 `go run . read <BINARY_PAYLOAD_BASE64>`

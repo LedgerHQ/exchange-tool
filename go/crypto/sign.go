@@ -9,7 +9,6 @@ import (
 
 	"golang.org/x/crypto/cryptobyte"
 	"golang.org/x/crypto/cryptobyte/asn1"
-	"exchange.ledger.fr/encode"
 )
 
 type SignFormat string
@@ -22,14 +21,12 @@ const (
 // Generate the payload from the provided JSON file
 //
 // Returns the base64URL encoded payload and its base64UL encoded signature
-func SignMessageInRS(message string, privKey *ecdsa.PrivateKey, format SignFormat) string {
+func SignMessageInRS(message string, privKey *ecdsa.PrivateKey, format SignFormat) []byte {
 	//-- Sign base64URL payload (don't forget to add a '.' before as we don't require the alg info)
 	//-- [JWS RFC](https://www.rfc-editor.org/rfc/rfc7515#section-5.1)
 	//payloadSignature := signPayload([]byte("."+payload64), &privKey)
 	signature := SignMessageInDER(message, privKey, format)
-	payloadSignature := convertToRS(signature)
-
-	return encode.EncodeBase64(payloadSignature)
+	return convertToRS(signature)
 }
 
 func SignMessageInDER(message string, privKey *ecdsa.PrivateKey, format SignFormat) []byte {
