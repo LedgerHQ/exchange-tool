@@ -1,0 +1,8 @@
+### VisualStudioCode ###
+.vscode/*
+
+# Generate binaries
+go/bin
+
+# Payload.json
+scripts/swap/payload.json

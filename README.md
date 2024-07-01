@@ -43,11 +43,12 @@ Example:
 `./exchange-tool sign SELL_TEST ./samples/sample-pub-key-secp256k1.pem`
 
 ### Generate CAL format for Provider info
-`./exchange-tool cal <PROVIDER_NAME> <CURVE> <PROVIDER_PUBLIC_KEY>`
+`./exchange-tool cal -n <PROVIDER_NAME> -c <CURVE> -p <PROVIDER_PUBLIC_KEY> -v <VERSON> -a <APPLICATION_NAME>`
+
 
 Example:
 
-`./exchange-tool cal SELL_TEST k1 ./samples/sample-pub-key-secp256k1.pem`
+`./exchange-tool cal -c k1 -p ../sample-public-key.pem -n moonpay -v 2 -a swap`
 
 **Disclaimer**
 DO NOT USE private key provided in this repository. Their goal is for test purpose only.

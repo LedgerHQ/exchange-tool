@@ -18,6 +18,7 @@ type params struct {
 	providerName    string
 	keyType         string
 	version         uint
+	appName         string
 }
 
 // JWT format: <Base64Url(HEADER)>.<Base64Url(PAYLOAD)>.<Base64Url(SIGNATURE)>
