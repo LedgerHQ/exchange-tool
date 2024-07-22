@@ -40,17 +40,13 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 		PayoutAddress:       message.PayoutAddress,
 		CurrencyFrom:        message.CurrencyFrom,
 		CurrencyTo:          message.CurrencyTo,
-		AmountToProvider:    providerAmount.Uint64(),
-		AmountToWallet:      walletAmount.Uint64(),
+		AmountToProvider:    providerAmount.String(),
+		AmountToWallet:      walletAmount.String(),
 		DeviceTransactionId: string(message.DeviceTransactionIdNg),
 	}
 }
 
 func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionResponse {
-	bigNumberToProvider := new(big.Int)
-	bigNumberToProvider.SetUint64(payload.AmountToProvider)
-	bigNumberToWallet := new(big.Int)
-	bigNumberToWallet.SetUint64(payload.AmountToWallet)
 	nonce, _ := hex.DecodeString(payload.DeviceTransactionId)
 
 	return swap.NewTransactionResponse{
@@ -59,8 +55,8 @@ func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionRespo
 		PayoutAddress:         payload.PayoutAddress,
 		CurrencyFrom:          payload.CurrencyFrom,
 		CurrencyTo:            payload.CurrencyTo,
-		AmountToProvider:      bigNumberToProvider.Bytes(),
-		AmountToWallet:        bigNumberToWallet.Bytes(),
+		AmountToProvider:      []byte(payload.AmountToProvider),
+		AmountToWallet:        []byte(payload.AmountToWallet),
 		DeviceTransactionIdNg: nonce,
 	}
 }

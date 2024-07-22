@@ -12,8 +12,8 @@ type SwapDevicePayload struct {
 	PayoutAddress       string `json:"payoutAddress"`
 	CurrencyFrom        string `json:"currencyFrom"`
 	CurrencyTo          string `json:"currencyTo"`
-	AmountToProvider    uint64 `json:"amountToProvider"`
-	AmountToWallet      uint64 `json:"amountToWallet"`
+	AmountToProvider    string `json:"amountToProvider"`
+	AmountToWallet      string `json:"amountToWallet"`
 	DeviceTransactionId string `json:"nonce"`
 }
 
