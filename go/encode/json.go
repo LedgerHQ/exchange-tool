@@ -7,14 +7,17 @@ import (
 )
 
 type SwapDevicePayload struct {
-	PayinAddress        string `json:"payinAddress"`
-	RefundAddress       string `json:"refundAddress"`
-	PayoutAddress       string `json:"payoutAddress"`
-	CurrencyFrom        string `json:"currencyFrom"`
-	CurrencyTo          string `json:"currencyTo"`
-	AmountToProvider    string `json:"amountToProvider"`
-	AmountToWallet      string `json:"amountToWallet"`
-	DeviceTransactionId string `json:"nonce"`
+	PayinAddress     string `json:"payinAddress"`
+	PayinExtraId     string `json:"payinExtraId"`
+	RefundAddress    string `json:"refundAddress"`
+	RefundExtraId    string `json:"refundExtraId"`
+	PayoutAddress    string `json:"payoutAddress"`
+	PayoutExtraId    string `json:"payoutExtraId"`
+	CurrencyFrom     string `json:"currencyFrom"`
+	CurrencyTo       string `json:"currencyTo"`
+	AmountToProvider string `json:"amountToProvider"`
+	AmountToWallet   string `json:"amountToWallet"`
+	Nonce            string `json:"nonce"`
 }
 
 type SellDevicePayload struct {

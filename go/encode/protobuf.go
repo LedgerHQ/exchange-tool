@@ -1,8 +1,10 @@
 package encode
 
 import (
+	//"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"math/big"
 	"strconv"
@@ -34,20 +36,31 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 	walletAmount := new(big.Int)
 	walletAmount.SetBytes(message.AmountToWallet)
 
+	fmt.Println("Decoded nonce: -> ", message.DeviceTransactionIdNg)
+
+	// Print the array of bytes
+	fmt.Printf("Byte array: %v\n", message.DeviceTransactionIdNg)
+
+	// Read the nonce as Hex
+	nonce := fmt.Sprintf("%x", message.DeviceTransactionIdNg)
+
 	return SwapDevicePayload{
-		PayinAddress:        message.PayinAddress,
-		RefundAddress:       message.RefundAddress,
-		PayoutAddress:       message.PayoutAddress,
-		CurrencyFrom:        message.CurrencyFrom,
-		CurrencyTo:          message.CurrencyTo,
-		AmountToProvider:    providerAmount.String(),
-		AmountToWallet:      walletAmount.String(),
-		DeviceTransactionId: string(message.DeviceTransactionIdNg),
+		PayinAddress:     message.PayinAddress,
+		PayinExtraId:     message.PayinExtraId,
+		RefundAddress:    message.RefundAddress,
+		RefundExtraId:    message.RefundExtraId,
+		PayoutAddress:    message.PayoutAddress,
+		PayoutExtraId:    message.PayoutExtraId,
+		CurrencyFrom:     message.CurrencyFrom,
+		CurrencyTo:       message.CurrencyTo,
+		AmountToProvider: providerAmount.String(),
+		AmountToWallet:   walletAmount.String(),
+		Nonce:            nonce,
 	}
 }
 
 func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionResponse {
-	nonce, _ := hex.DecodeString(payload.DeviceTransactionId)
+	nonce, _ := hex.DecodeString(payload.Nonce)
 
 	return swap.NewTransactionResponse{
 		PayinAddress:          payload.PayinAddress,
