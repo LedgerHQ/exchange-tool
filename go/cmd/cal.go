@@ -49,7 +49,7 @@ func cal(cmd *cobra.Command, args []string) {
 
 	calInfo := generateCal(params.curve, params.pemFile, params.providerName, params.version, params.appName)
 
-	fmt.Println("--> CAL info (copy/paste for Live):", calInfo.Pretty())
+	fmt.Println("--> CAL info (copy/paste for Live): \n", calInfo.Pretty())
 }
 
 func generateCal(curve crypto.Curve, filename string, providerName string, version uint, appName string) encode.CalInfo {
