@@ -57,7 +57,14 @@ func convertGeneateParameter(args []string) *params {
 }
 
 func generate[T encode.SwapDevicePayload | encode.SellDevicePayload](cmd *cobra.Command, args []string) {
-	fmt.Println("*** Generate Swap Proto ***")
+	switch any(new(T)).(type) {
+	case *encode.SwapDevicePayload:
+		fmt.Println("*** Generate Swap Proto ***")
+	case *encode.SellDevicePayload:
+		fmt.Println("*** Generate Sell Proto ***")
+	default:
+		fmt.Println("*** Unknown Payload Type ***")
+	}
 
 	params := convertGeneateParameter(args)
 
