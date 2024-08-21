@@ -16,6 +16,7 @@ type SignFormat string
 const (
 	Raw SignFormat = "raw"
 	Jwt SignFormat = "jwt"
+	Jws SignFormat = "jws"
 )
 
 // Generate the payload from the provided JSON file

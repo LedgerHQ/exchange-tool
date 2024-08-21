@@ -19,6 +19,7 @@ func init() {
 	CalCmd.Flags().StringP("public", "p", "", "Public key file")
 	CalCmd.Flags().StringP("name", "n", "", "Provider's name")
 	CalCmd.Flags().UintP("version", "v", 2, "app-exchange version signaure (1 or 2)")
+	CalCmd.Flags().StringP("app-name", "a", "swap", "application name")
 	CalCmd.MarkFlagRequired("curve")
 	CalCmd.MarkFlagRequired("public")
 	CalCmd.MarkFlagRequired("name")
@@ -30,12 +31,14 @@ func convertCalParameter(cmd *cobra.Command) *params {
 	pemFile := cmd.Flags().Lookup("public").Value.String()
 	name := cmd.Flags().Lookup("name").Value.String()
 	version, _ := cmd.Flags().GetUint("version")
+	appName := cmd.Flags().Lookup("app-name").Value.String()
 
 	return &params{
 		providerName: name,
 		curve:        parseCurve(curve),
 		pemFile:      pemFile,
 		version:      version,
+		appName: 	appName,
 	}
 }
 
@@ -44,15 +47,16 @@ func cal(cmd *cobra.Command, args []string) {
 
 	params := convertCalParameter(cmd)
 
-	calInfo := generateCal(params.curve, params.pemFile, params.providerName, params.version)
+	calInfo := generateCal(params.curve, params.pemFile, params.providerName, params.version, params.appName)
 
-	fmt.Println("--> CAL info (copy/paste for Live):", calInfo.String())
-	fmt.Println("--> CAL info:", calInfo.Pretty())
+	fmt.Println("--> CAL info (copy/paste for Live): \n", calInfo.Pretty())
 }
 
-func generateCal(curve crypto.Curve, filename string, providerName string, version uint) encode.CalInfo {
+func generateCal(curve crypto.Curve, filename string, providerName string, version uint, appName string) encode.CalInfo {
 	pubKey := curve.ConvertPEMtoHexKey(filename)
 	apdu, signature := crypto.SignProviderInfo(providerName, pubKey, curve, version)
-	calInfo := encode.CalFormatProviderInfo(providerName, curve.Name(), pubKey, signature, version, apdu)
+	fmt.Println("Signature:", signature)
+	fmt.Println("APDU:", apdu)
+	calInfo := encode.CalFormatProviderInfo(providerName, curve.Name(), pubKey, version, appName)
 	return calInfo
 }
