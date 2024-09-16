@@ -39,6 +39,7 @@ type Curve interface {
 	ReadPublicKey(filename string) *ecdsa.PublicKey
 	ReadPrivateKey(filename string) (*ecdsa.PrivateKey, error)
 	ConvertPEMtoHexKey(filename string) string
+	ReadHexPublicKey(hexValue string) *ecdsa.PublicKey
 	Name() string
 	Flag() string
 	Code() string
