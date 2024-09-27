@@ -55,7 +55,7 @@ func check(cmd *cobra.Command, args []string) {
 	if params.pemHex == "" {
 		status = checkPayloadWithKeyFile(params.curve, params.signFormat, params.pemFile, params.payloadBase64, params.signatureBase64)
 	} else {
-		status = checkPayloadWithKeyHex(params.curve, params.signFormat, params.pemFile, params.payloadBase64, params.signatureBase64)
+		status = checkPayloadWithKeyHex(params.curve, params.signFormat, params.pemHex, params.payloadBase64, params.signatureBase64)
 	}
 
 	if status.isOk {

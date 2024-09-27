@@ -12,7 +12,7 @@ Example:
 `go run . generate -c k1 -p ../samples/sample-priv-key-secp256k1.pem payload-example.json`
 
 ### Check
-`go run . check <CURVE> <PUBLIC_KEY> <BINARY_PAYLOAD_BASE64> <SIGNATURE_BASE64>`
+`go run . check -c <CURVE> {-p <PUBLIC_KEY_FILEPATH> | -x <PUBLIC_KEY_HEX_VALUE>} <BINARY_PAYLOAD_BASE64> <SIGNATURE_BASE64>`
 
 Example:
 
