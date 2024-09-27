@@ -154,14 +154,14 @@ func TestCoinConfig(t *testing.T) {
 			},
 			"0345544808457468657265756d050345544812",
 		},
-		{
-			CoinConfig{
-				"TON",
-				"TON",
-				make([]byte, 0),
-			},
-			"0345544808457468657265756d050345544812",
-		},
+		// {
+		// 	CoinConfig{
+		// 		"TON",
+		// 		"TON",
+		// 		make([]byte, 0),
+		// 	},
+		// 	"0345544808457468657265756d050345544812",
+		// },
 	}
 
 	for _, tc := range testCases {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
 	"log"
@@ -13,58 +12,7 @@ import (
 	ethereum "github.com/ethereum/go-ethereum/crypto"
 )
 
-const payloadBase64 = "CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs="
-
-type readPrivateKey func(string) (*ecdsa.PrivateKey, error)
-type signTest struct {
-	name, secretFilename string
-	curve                crypto.Curve
-}
-
-func TestSign(t *testing.T) {
-	// Given
-	inputsTest := []signTest{
-		{"K1", "../example/sample-priv-key-secp256k1.pem", crypto.K1Curve{}},
-		{"R1", "../example/sample-priv-key-secp256r1.pem", crypto.R1Curve{}},
-	}
-	// samplePayloadFilename := "../example/payload-example.json"
-
-	for _, input := range inputsTest {
-		t.Run(input.name, func(t *testing.T) {
-			// When
-			// payload64, sign64 := GenerateProtoAndSign(input.curve, crypto.Raw, input.secretFilename, samplePayloadFilename)
-
-			// Then
-			// if payload64 != payloadBase64 {
-			// 	t.Errorf("Payload doesn't have the expected Base64 encoding.\nExpected: %v\nGet: %v", payloadBase64, payload64)
-			// }
-			// t.Log("Base64Url signature:", sign64)
-		})
-	}
-}
-
-type readPublicKey func(string) *ecdsa.PublicKey
-type checkTest struct {
-	name, publicFilename, expectedSignBase64 string
-	curve                                    crypto.Curve
-}
-
-func TestCheck(t *testing.T) {
-	// Given
-	inputsTest := []checkTest{
-		{"K1", "../example/sample-pub-key-secp256k1.pem", "uGfScnjQaRey0eruykvBK0rTTJqwZ9o_8rzU2bs79KgwoWPDyGGYMntD4CdJk6sO2smvtvwTzPh4sQP1AYxZ2Q==", crypto.K1Curve{}},
-		{"R1", "../example/sample-pub-key-secp256r1.pem", "d1IW9sYU4xIrRbpXxuv0wIjcvK7wcu16F3uIsFre0rg9HZaY-UiWIdSCEWYq6gN-JYaXNTuoZViS6HF4Y4HHzg==", crypto.R1Curve{}},
-	}
-	for _, input := range inputsTest {
-		t.Run(input.name, func(t *testing.T) {
-			// status := CheckPayload(input.curve, crypto.Raw, input.publicFilename, payloadBase64, input.expectedSignBase64)
-
-			// if !status.isOk {
-			// 	t.Fatal("Signature is not the one expected (see Python tests)")
-			// }
-		})
-	}
-}
+// const payloadBase64 = "CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs="
 
 type consistencyTest struct {
 	name, secretFilename, publicFilename string
