@@ -68,25 +68,18 @@ func generate[T encode.SwapDevicePayload | encode.SellDevicePayload](cmd *cobra.
 
 	params := convertGeneateParameter(args)
 
-	marshalledPayload := func() []byte {
-		payloadJson := encode.ConvertFileToDevicePayload[T](params.payloadFilename)
-		return encode.EncodeDevicePaylod(payloadJson)
-	}
-	payload64, sign64 := generateProtoAndSign(params.curve, params.signFormat, params.pemFile, marshalledPayload)
+	payload64, sign64 := generateProtoAndSign[T](params.curve, params.signFormat, params.pemFile, params.payloadFilename)
 
 	fmt.Println("--> Result payload base64:\n", payload64)
 	fmt.Println("--> Result signature base64:\n", sign64)
-
-	// hash := sha256.New()
-	// hash.Write([]byte(payload64))
-	// fmt.Println("--> Sha256 of base64 payload with no prefix:\n", hex.EncodeToString(hash.Sum(nil)))
-	// hash = sha256.New()
-	// hash.Write([]byte("." + payload64))
-	// fmt.Println("--> Sha256 of base64 payload with prefix:\n", hex.EncodeToString(hash.Sum(nil)))
-	// fmt.Println("--> base64 payload size:", len(payload64))
 }
 
-func generateProtoAndSign(curve crypto.Curve, signFormat crypto.SignFormat, privFilename string, fnMarshalledFile marshalFile) (payload64 string, sign64 string) {
+func generateProtoAndSign[T encode.SwapDevicePayload | encode.SellDevicePayload](curve crypto.Curve, signFormat crypto.SignFormat, privFilename, payloadFilename string) (payload64 string, sign64 string) {
+	fnMarshalledFile := func() []byte {
+		payloadJson := encode.ConvertFileToDevicePayload[T](payloadFilename)
+		return encode.EncodeDevicePaylod(payloadJson)
+	}
+
 	privateKey, _ := curve.ReadPrivateKey(privFilename)
 	payload64 = fileToBase64(fnMarshalledFile)
 	signature := crypto.SignMessageInRS(payload64, privateKey, signFormat)

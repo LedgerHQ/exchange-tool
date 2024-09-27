@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"crypto/ecdsa"
 	"fmt"
 
 	"exchange.ledger.fr/crypto"
@@ -22,19 +23,22 @@ type checkStatus struct {
 func init() {
 	CheckCmd.Flags().StringP("curve", "c", "", "Curve: k1 or r1")
 	CheckCmd.Flags().StringP("public", "p", "", "Public key file")
+	CheckCmd.Flags().StringP("hex", "x", "", "Public key hex value")
 	CheckCmd.Flags().StringP("format", "f", "jwt", "Sign format: raw or jwt")
 	CheckCmd.MarkFlagRequired("curve")
-	CheckCmd.MarkFlagRequired("public")
+	CheckCmd.MarkFlagsMutuallyExclusive("public", "hex")
 }
 
 func convertCheckParameter(cmd *cobra.Command, args []string) *params {
 	curve := cmd.Flags().Lookup("curve").Value.String()
 	pemFile := cmd.Flags().Lookup("public").Value.String()
+	pemHex := cmd.Flags().Lookup("hex").Value.String()
 	signFormat := cmd.Flags().Lookup("format").Value.String()
 
 	params := &params{
 		curve:           parseCurve(curve),
 		pemFile:         pemFile,
+		pemHex:          pemHex,
 		signatureBase64: args[1], // Expected in base64
 		signFormat:      parseSignFormat(signFormat),
 	}
@@ -47,7 +51,12 @@ func check(cmd *cobra.Command, args []string) {
 
 	params := convertCheckParameter(cmd, args)
 
-	status := checkPayload(params.curve, params.signFormat, params.pemFile, params.payloadBase64, params.signatureBase64)
+	var status checkStatus
+	if params.pemHex == "" {
+		status = checkPayloadWithKeyFile(params.curve, params.signFormat, params.pemFile, params.payloadBase64, params.signatureBase64)
+	} else {
+		status = checkPayloadWithKeyHex(params.curve, params.signFormat, params.pemFile, params.payloadBase64, params.signatureBase64)
+	}
 
 	if status.isOk {
 		fmt.Println("--> Payload is CORRECTLY signed")
@@ -57,9 +66,17 @@ func check(cmd *cobra.Command, args []string) {
 }
 
 // Check provided base64 URL encoded payload (which must be a binary protobuf) that match the signature
-func checkPayload(curve crypto.Curve, signFormat crypto.SignFormat, pubFilename, payload, signature string) checkStatus {
+func checkPayloadWithKeyFile(curve crypto.Curve, signFormat crypto.SignFormat, pubFilename, payload, signature string) checkStatus {
 	publicKey := curve.ReadPublicKeyFile(pubFilename)
+	return checkPayload(publicKey, signFormat, payload, signature)
+}
 
+func checkPayloadWithKeyHex(curve crypto.Curve, signFormat crypto.SignFormat, pubHexValue, payload, signature string) checkStatus {
+	publicKey := curve.ReadHexPublicKey(pubHexValue)
+	return checkPayload(publicKey, signFormat, payload, signature)
+}
+
+func checkPayload(publicKey *ecdsa.PublicKey, signFormat crypto.SignFormat, payload, signature string) checkStatus {
 	signatureByte, format := encode.CascadeDecodeBase64(signature)
 	status := checkStatus{
 		base64Format: format,

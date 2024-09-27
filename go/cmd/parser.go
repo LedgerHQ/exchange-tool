@@ -10,6 +10,7 @@ import (
 type params struct {
 	curve           crypto.Curve
 	pemFile         string
+	pemHex          string
 	payloadFilename string
 	payloadBase64   string
 	signatureBase64 string
