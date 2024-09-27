@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestRead(t *testing.T) {
+func TestReadPrivateFileKey(t *testing.T) {
 	filename := "../../samples/sample-priv-key-secp256k1.pem"
 
 	curve := K1Curve{}
@@ -16,6 +16,14 @@ func TestRead(t *testing.T) {
 	}
 }
 
+func TestReadPublicFileKey(t *testing.T) {
+	filename := "../../samples/sample-pub-key-secp256k1.pem"
+
+	curve := K1Curve{}
+
+	curve.ReadPublicKeyFile(filename)
+}
+
 func TestK1PartnerKey(t *testing.T) {
 	pubHex := "044989cad389020fadfb9d7a85d29338a450beec571347d2989fb57b99ecddbc8907cf8c229deee30fb8ac139e978cab8f6efad76bde2a9c6d6710ceda1fe0a4d8"
 	payload := "CioweEM5RUY3MDYxMjcxQWMyNGM1MzI5MzkxNGM4QjU5MkU4RDYxMDNmQmUaKjB4OTQ3RTU3NjY5ZjhDOGMyYjE2M0I0MjA1QjhEOUVCMzE4M2EwNzhBYioqMHg5NDdFNTc2NjlmOEM4YzJiMTYzQjQyMDVCOEQ5RUIzMTgzYTA3OEFiOgNidGNCA2J0Y0oQAAAAAAAYkRAAAAAAAAAAAFIQyPNLSBuoAAAAAAAAAAAAAFoBMWIQAAAAAAAAAAEAAAAAAAAAAA"
@@ -24,7 +32,22 @@ func TestK1PartnerKey(t *testing.T) {
 	curve := K1Curve{}
 	key := curve.ReadHexPublicKey(pubHex)
 
-	result := VerifySignature(key, payload, signature, Jwt)
+	result := VerifyRSSignature(key, payload, signature, Jwt)
+
+	if result == false {
+		t.Fatal("Unable to verify signature")
+	}
+}
+
+func TestK1PartnerFileKey(t *testing.T) {
+	pubFile := "../../samples/sample-pub-key-secp256k1.pem"
+	payload := "CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHESA0JUQxoCBH4iKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoDRVVSMgwKCAAAAAAAAAAMEAI6IDUK6gyX90fx0PdggUYUpHUjgBsa630Ly7qipPRr-BhL"
+	signature, _ := base64.URLEncoding.DecodeString("j2kXZWAAIk6rIQbccYbZ0BgFaGrqedcWKoAyekqLDSTdej2FEfF5GYDWpzxV1cn8Y4bJiL1xM-geWVZkqok2eA==")
+
+	curve := K1Curve{}
+	key := curve.ReadPublicKeyFile(pubFile)
+
+	result := VerifyRSSignature(key, payload, signature, Raw)
 
 	if result == false {
 		t.Fatal("Unable to verify signature")
@@ -39,7 +62,37 @@ func TestR1PartnerKey(t *testing.T) {
 	curve := R1Curve{}
 	key := curve.ReadHexPublicKey(pubHex)
 
-	result := VerifySignature(key, payload, signature, Jwt)
+	result := VerifyRSSignature(key, payload, signature, Jwt)
+
+	if result == false {
+		t.Fatal("Unable to verify signature")
+	}
+}
+
+func TestR1PartnerFileKey_Raw(t *testing.T) {
+	pubFile := "../../samples/sample-pub-key-secp256r1.pem"
+	payload := "CjBVUUFidnMydENuc1RXeENaWDdKVy1kcWxrMHZNOHhfbThhSnFGNHd3UldHdFRFWkQaMFVRQWJ2czJ0Q25zVFd4Q1pYN0pXLWRxbGswdk04eF9tOGFKcUY0d3dSV0d0VEVaRCoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNUT05CA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs="
+	signature, _ := base64.URLEncoding.DecodeString("w90hVJjj0Pquqq0CLmtq6sFNAGrMRWMmNKn3OqRkZzbj6fpIQMO1pN7d70sSL4DrLEXO9Hacvi3tib5D-p5uEA==")
+
+	curve := R1Curve{}
+	key := curve.ReadPublicKeyFile(pubFile)
+
+	result := VerifyRSSignature(key, payload, signature, Raw)
+
+	if result == false {
+		t.Fatal("Unable to verify signature")
+	}
+}
+
+func TestR1PartnerFileKey_Jwt(t *testing.T) {
+	pubFile := "../../samples/sample-pub-key-secp256r1.pem"
+	payload := "CjBVUUFidnMydENuc1RXeENaWDdKVy1kcWxrMHZNOHhfbThhSnFGNHd3UldHdFRFWkQaMFVRQWJ2czJ0Q25zVFd4Q1pYN0pXLWRxbGswdk04eF9tOGFKcUY0d3dSV0d0VEVaRCoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNUT05CA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs="
+	signature, _ := base64.URLEncoding.DecodeString("s86hbFOoRDJsA7l62q9k10dfToyJPZSuuZZtOQbZU07LoqEVjCklASXqbFMJeU3pWXtQQiNu96KoH7xjhhRTqg==")
+
+	curve := R1Curve{}
+	key := curve.ReadPublicKeyFile(pubFile)
+
+	result := VerifyRSSignature(key, payload, signature, Jwt)
 
 	if result == false {
 		t.Fatal("Unable to verify signature")

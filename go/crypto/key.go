@@ -36,13 +36,14 @@ import (
 )
 
 type Curve interface {
-	ReadPublicKey(filename string) *ecdsa.PublicKey
+	ReadPublicKeyFile(filename string) *ecdsa.PublicKey
+	ReadPublicKey(contentByte []byte) *ecdsa.PublicKey
 	ReadPrivateKey(filename string) (*ecdsa.PrivateKey, error)
 	ConvertPEMtoHexKey(filename string) string
 	ReadHexPublicKey(hexValue string) *ecdsa.PublicKey
 	Name() string
 	Flag() string
-	Code() string
+	Code() []byte
 }
 
 type K1Curve struct {
@@ -81,17 +82,21 @@ func (c K1Curve) ConvertPrivPEMtoHexKey(filename string) string {
 
 // --
 
-func (c K1Curve) ReadPublicKey(filename string) *ecdsa.PublicKey {
+func (c K1Curve) ReadPublicKeyFile(filename string) *ecdsa.PublicKey {
 	contentByte, err := readPemFile(filename)
 	if err != nil {
 		log.Fatal("Unable to open pub key file:", filename)
 	}
 
+	return c.ReadPublicKey(contentByte)
+}
+
+func (c K1Curve) ReadPublicKey(contentByte []byte) *ecdsa.PublicKey {
 	// This part is a substitute to `x509.ParsePKIXPublicKey` which throw an error "unsupported elliptic curve"
 	// This is due to the fact that secp256k1 is not supported by the Golang crypto package.
 	var pki publicKeyInfo
 	if _, err := asn1.Unmarshal(contentByte, &pki); err != nil {
-		log.Fatal("Unable to read public key file")
+		log.Fatal("Unable to read public key. Reason:", err.Error())
 	}
 
 	asn1Data := pki.PublicKey.RightAlign()
@@ -157,8 +162,8 @@ func (c K1Curve) Flag() string {
 	return "k1"
 }
 
-func (c K1Curve) Code() string {
-	return "00"
+func (c K1Curve) Code() []byte {
+	return []byte{0x00}
 }
 
 // -- R1
@@ -199,12 +204,16 @@ func (c R1Curve) ReadPrivateKey(filename string) (privKey *ecdsa.PrivateKey, err
 	return
 }
 
-func (c R1Curve) ReadPublicKey(filename string) (pubKey *ecdsa.PublicKey) {
+func (c R1Curve) ReadPublicKeyFile(filename string) (pubKey *ecdsa.PublicKey) {
 	contentByte, err := readPemFile(filename)
 	if err != nil {
 		log.Fatal("Unable to open public key file:", filename)
 	}
 
+	return c.ReadPublicKey(contentByte)
+}
+
+func (c R1Curve) ReadPublicKey(contentByte []byte) (pubKey *ecdsa.PublicKey) {
 	key, err := x509.ParsePKIXPublicKey(contentByte)
 	if err != nil {
 		log.Fatal("Error while reading public key:", err)
@@ -251,8 +260,8 @@ func (c R1Curve) Flag() string {
 	return "r1"
 }
 
-func (c R1Curve) Code() string {
-	return "01"
+func (c R1Curve) Code() []byte {
+	return []byte{0x01}
 }
 
 // -- Utils

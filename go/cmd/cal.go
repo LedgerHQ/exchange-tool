@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"exchange.ledger.fr/crypto"
 	"exchange.ledger.fr/encode"
@@ -38,7 +39,7 @@ func convertCalParameter(cmd *cobra.Command) *params {
 		curve:        parseCurve(curve),
 		pemFile:      pemFile,
 		version:      version,
-		appName: 	appName,
+		appName:      appName,
 	}
 }
 
@@ -49,14 +50,15 @@ func cal(cmd *cobra.Command, args []string) {
 
 	calInfo := generateCal(params.curve, params.pemFile, params.providerName, params.version, params.appName)
 
-	fmt.Println("--> CAL info (copy/paste for Live): \n", calInfo.Pretty())
+	fmt.Println("--> Ledger Live format:\n", calInfo.String())
+	fmt.Println("--> CAL format:\n", calInfo.CalFormat())
 }
 
 func generateCal(curve crypto.Curve, filename string, providerName string, version uint, appName string) encode.CalInfo {
 	pubKey := curve.ConvertPEMtoHexKey(filename)
 	apdu, signature := crypto.SignProviderInfo(providerName, pubKey, curve, version)
-	fmt.Println("Signature:", signature)
-	fmt.Println("APDU:", apdu)
-	calInfo := encode.CalFormatProviderInfo(providerName, curve.Name(), pubKey, version, appName)
+	log.Println("Signature:", signature)
+	log.Println("APDU:", apdu)
+	calInfo := encode.CalFormatProviderInfo(providerName, curve.Name(), pubKey, version, appName, signature, apdu)
 	return calInfo
 }

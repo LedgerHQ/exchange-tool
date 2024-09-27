@@ -58,7 +58,7 @@ func check(cmd *cobra.Command, args []string) {
 
 // Check provided base64 URL encoded payload (which must be a binary protobuf) that match the signature
 func checkPayload(curve crypto.Curve, signFormat crypto.SignFormat, pubFilename, payload, signature string) checkStatus {
-	publicKey := curve.ReadPublicKey(pubFilename)
+	publicKey := curve.ReadPublicKeyFile(pubFilename)
 
 	signatureByte, format := encode.CascadeDecodeBase64(signature)
 	status := checkStatus{
@@ -66,7 +66,7 @@ func checkPayload(curve crypto.Curve, signFormat crypto.SignFormat, pubFilename,
 		isOk:         true,
 	}
 
-	status.isOk = crypto.VerifySignature(publicKey, payload, signatureByte, signFormat)
+	status.isOk = crypto.VerifyRSSignature(publicKey, payload, signatureByte, signFormat)
 
 	return status
 }

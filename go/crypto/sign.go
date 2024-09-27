@@ -26,13 +26,12 @@ func SignMessageInRS(message string, privKey *ecdsa.PrivateKey, format SignForma
 	//-- Sign base64URL payload (don't forget to add a '.' before as we don't require the alg info)
 	//-- [JWS RFC](https://www.rfc-editor.org/rfc/rfc7515#section-5.1)
 	//payloadSignature := signPayload([]byte("."+payload64), &privKey)
-	signature := SignMessageInDER(message, privKey, format)
-	return convertToRS(signature)
+	message = formatMessageToSign(message, format)
+	signature := SignMessageInDER([]byte(message), privKey)
+	return convertDERToRS(signature)
 }
 
-func SignMessageInDER(message string, privKey *ecdsa.PrivateKey, format SignFormat) []byte {
-	message = formatMessageToSign(message, format)
-
+func SignMessageInDER(message []byte, privKey *ecdsa.PrivateKey) []byte {
 	return signPayloadNew([]byte(message), privKey)
 }
 
@@ -47,7 +46,7 @@ func signPayloadNew(data []byte, privateKey *ecdsa.PrivateKey) []byte {
 	return sign
 }
 
-func convertToRS(signature []byte) []byte {
+func convertDERToRS(signature []byte) []byte {
 	r := new(big.Int)
 	s := new(big.Int)
 	value := new(cryptobyte.String)

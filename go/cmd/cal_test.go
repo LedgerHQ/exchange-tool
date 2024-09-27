@@ -7,7 +7,7 @@ import (
 )
 
 func TestCal(t *testing.T) {
-	calInfo := generateCal(crypto.R1Curve{}, "../../../../coinify-pubkey.pem", "Coinify", 1)
+	calInfo := generateCal(crypto.R1Curve{}, "../../../../coinify-pubkey.pem", "Coinify", 1, "swap")
 
 	if calInfo.Name != "Coinify" {
 		t.Fatalf("Wrong CAL info")
