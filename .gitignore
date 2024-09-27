@@ -6,3 +6,6 @@ go/bin
 
 # Payload.json
 scripts/swap/payload.json
+
+#
+*.pem

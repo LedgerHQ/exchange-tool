@@ -7,14 +7,16 @@ import (
 )
 
 type SwapDevicePayload struct {
-	PayinAddress        string `json:"payinAddress"`
-	RefundAddress       string `json:"refundAddress"`
-	PayoutAddress       string `json:"payoutAddress"`
-	CurrencyFrom        string `json:"currencyFrom"`
-	CurrencyTo          string `json:"currencyTo"`
-	AmountToProvider    uint64 `json:"amountToProvider"`
-	AmountToWallet      uint64 `json:"amountToWallet"`
-	DeviceTransactionId string `json:"nonce"`
+	PayinAddress          string `json:"payinAddress"`
+	RefundAddress         string `json:"refundAddress"`
+	PayoutAddress         string `json:"payoutAddress"`
+	CurrencyFrom          string `json:"currencyFrom"`
+	CurrencyTo            string `json:"currencyTo"`
+	AmountToProvider      uint64 `json:"amountToProvider"`
+	AmountToWallet        uint64 `json:"amountToWallet"`
+	DeviceTransactionId   string `json:"nonce"`
+	DeviceTransactionIdNg string `json:"deviceTransactionIdNg"`
+	PayinExtraData        string `json:"payinExtraData"`
 }
 
 type Decimal struct {

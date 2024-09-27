@@ -37,14 +37,16 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 	walletAmount.SetBytes(message.AmountToWallet)
 
 	return SwapDevicePayload{
-		PayinAddress:        message.PayinAddress,
-		RefundAddress:       message.RefundAddress,
-		PayoutAddress:       message.PayoutAddress,
-		CurrencyFrom:        message.CurrencyFrom,
-		CurrencyTo:          message.CurrencyTo,
-		AmountToProvider:    providerAmount.Uint64(),
-		AmountToWallet:      walletAmount.Uint64(),
-		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionIdNg),
+		PayinAddress:          message.PayinAddress,
+		RefundAddress:         message.RefundAddress,
+		PayoutAddress:         message.PayoutAddress,
+		CurrencyFrom:          message.CurrencyFrom,
+		CurrencyTo:            message.CurrencyTo,
+		AmountToProvider:      providerAmount.Uint64(),
+		AmountToWallet:        walletAmount.Uint64(),
+		DeviceTransactionId:   message.DeviceTransactionId,
+		DeviceTransactionIdNg: hex.EncodeToString(message.DeviceTransactionIdNg),
+		PayinExtraData:        hex.EncodeToString(message.PayinExtraData),
 	}
 }
 
@@ -53,7 +55,8 @@ func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionRespo
 	bigNumberToProvider.SetUint64(payload.AmountToProvider)
 	bigNumberToWallet := new(big.Int)
 	bigNumberToWallet.SetUint64(payload.AmountToWallet)
-	nonce, _ := hex.DecodeString(payload.DeviceTransactionId)
+	deviceTransactionIdNg, _ := hex.DecodeString(payload.DeviceTransactionIdNg)
+	payinExtraData, _ := hex.DecodeString(payload.PayinExtraData)
 
 	return swap.NewTransactionResponse{
 		PayinAddress:          payload.PayinAddress,
@@ -63,7 +66,9 @@ func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionRespo
 		CurrencyTo:            payload.CurrencyTo,
 		AmountToProvider:      bigNumberToProvider.Bytes(),
 		AmountToWallet:        bigNumberToWallet.Bytes(),
-		DeviceTransactionIdNg: nonce,
+		DeviceTransactionId:   payload.DeviceTransactionId,
+		DeviceTransactionIdNg: deviceTransactionIdNg,
+		PayinExtraData:        payinExtraData,
 	}
 }
 
