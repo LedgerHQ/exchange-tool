@@ -233,6 +233,9 @@ func (c R1Curve) ReadHexPublicKey(hexValue string) *ecdsa.PublicKey {
 	}
 
 	x, y := elliptic.Unmarshal(elliptic.P256(), contentByte)
+	if x == nil && y == nil {
+		log.Fatalln("Error while reading public key content")
+	}
 
 	return &ecdsa.PublicKey{
 		Curve: elliptic.P256(),

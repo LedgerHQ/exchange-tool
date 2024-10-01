@@ -1,50 +1,13 @@
 # Go exchange-tool
 
 ## Compilation
-If you want to build an exec, simply: `make build`
+If you want to build an executable, simply: `make build` (you can use the alternate command `make build-opti`)
 
 ## Usage in dev
-### Generate
-`go run . generate <CURVE> <PRIVATE_KEY> <PAYLOAD_JSON_FORMAT>`
+In root directory, replace README command example `./exchange-tool` by `go run .`
 
-Example:
-
-`go run . generate -c k1 -p ../samples/sample-priv-key-secp256k1.pem payload-example.json`
-
-### Check
-`go run . check -c <CURVE> {-p <PUBLIC_KEY_FILEPATH> | -x <PUBLIC_KEY_HEX_VALUE>} <BINARY_PAYLOAD_BASE64> <SIGNATURE_BASE64>`
-
-Example:
-
-`go run . check -c k1 -p ../samples/sample-pub-key-secp256k1.pem CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK 5-J8C2lb9bZj2yGWaNCjKyW15mDx3zaYc3u59Bag7t-G0-vjzpadZzWTHMGUJeY2IJMr5NxQV5RqdFemOvbaWQ==`
-
-### Read
-`go run . read <BINARY_PAYLOAD_BASE64>`
-
-Example:
-
-`go run . read CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK`
-
-### Convert asn1 pubkey to hex value
-`go run . hex <PROVIDER_PUBLIC_KEY>`
-
-Example:
-
-`go run . hex ../samples/sample-pub-key-secp256k1.pem`
-
-### Sign Provider
-`go run . sign <PROVIDER_NAME> <PROVIDER_PUBLIC_KEY>`
-
-Example:
-
-`go run . sign SELL_TEST ../samples/sample-pub-key-secp256k1.pem`
-
-### Generate CAL format for Provider info
-`go run . cal <PROVIDER_NAME> <CURVE> <PROVIDER_PUBLIC_KEY>`
-
-Example:
-
-`go run . cal SELL_TEST k1 ../samples/sample-pub-key-secp256k1.pem`
+## Check test
+`make test`
 
 ## Generate go file from protobuf
 ```sh

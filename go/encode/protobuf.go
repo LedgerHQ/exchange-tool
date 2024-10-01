@@ -11,13 +11,16 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func EncodeDevicePaylod[T SwapDevicePayload | SellDevicePayload](payload T) []byte {
+func EncodeDevicePaylod[T SwapDevicePayload | SellDevicePayload | FundDevicePayload](payload T) []byte {
 	switch m := any(payload).(type) {
 	case SwapDevicePayload:
 		message := convertSwapDevicePaylod(m)
 		return marshalProtobuf(&message)
 	case SellDevicePayload:
 		message := convertSellDevicePaylod(m)
+		return marshalProtobuf(&message)
+	case FundDevicePayload:
+		message := convertFundDevicePaylod(m)
 		return marshalProtobuf(&message)
 	default:
 		log.Fatalln("Unknown DevicePayload type")
@@ -42,7 +45,7 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 		CurrencyTo:          message.CurrencyTo,
 		AmountToProvider:    providerAmount.Uint64(),
 		AmountToWallet:      walletAmount.Uint64(),
-		DeviceTransactionId: string(message.DeviceTransactionIdNg),
+		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionIdNg),
 	}
 }
 
@@ -81,7 +84,7 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 		InAddress:           message.InAddress,
 		OutCurrency:         message.OutCurrency,
 		OutAmount:           outAmount,
-		DeviceTransactionId: string(message.DeviceTransactionId),
+		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionId),
 	}
 }
 
@@ -106,13 +109,45 @@ func convertSellDevicePaylod(payload SellDevicePayload) swap.NewSellResponse {
 	}
 }
 
+func DecodeFundProtobuf(payload []byte) FundDevicePayload {
+	message := swap.NewFundResponse{}
+	proto.Unmarshal(payload, &message)
+
+	inAmount := new(big.Int)
+	inAmount.SetBytes(message.InAmount)
+
+	return FundDevicePayload{
+		UserId:              message.UserId,
+		AccountName:         message.AccountName,
+		InCurrency:          message.InCurrency,
+		InAmount:            inAmount.Uint64(),
+		InAddress:           message.InAddress,
+		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionId),
+	}
+}
+
+func convertFundDevicePaylod(payload FundDevicePayload) swap.NewFundResponse {
+	bigNumberIntAmount := new(big.Int)
+	bigNumberIntAmount.SetUint64(payload.InAmount)
+	nonce, _ := hex.DecodeString(payload.DeviceTransactionId)
+
+	return swap.NewFundResponse{
+		UserId:              payload.UserId,
+		AccountName:         payload.AccountName,
+		InCurrency:          payload.InCurrency,
+		InAmount:            bigNumberIntAmount.Bytes(),
+		InAddress:           payload.InAddress,
+		DeviceTransactionId: nonce,
+	}
+}
+
 // Encode Protobuf to binary
-type Message[E swap.NewTransactionResponse | swap.NewSellResponse] interface {
+type Message[E swap.NewTransactionResponse | swap.NewSellResponse | swap.NewFundResponse] interface {
 	*E
 	proto.Message
 }
 
-func marshalProtobuf[M Message[E], E swap.NewTransactionResponse | swap.NewSellResponse](message M) []byte {
+func marshalProtobuf[M Message[E], E swap.NewTransactionResponse | swap.NewSellResponse | swap.NewFundResponse](message M) []byte {
 	payloadMarshalled, err := proto.Marshal(message)
 	if err != nil {
 		log.Fatal("Error while marshalling payload to protobuf:", err)

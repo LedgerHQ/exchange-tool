@@ -63,6 +63,21 @@ func TestSignByLedger(t *testing.T) {
 	}
 }
 
+func TestSignByLedger2(t *testing.T) {
+	// Given
+	const messageToSign = "Something very important"
+	ledgerPrivateKey := ledgerPrivateKey()
+	ledgerPublicKey := ledgerPublicKey()
+
+	// When
+	signature := SignMessageInRS(messageToSign, ledgerPrivateKey, Raw)
+
+	// Then
+	if VerifyRSSignature2(ledgerPublicKey, []byte(messageToSign), signature) != true {
+		t.Fatalf("Ledger key pair mismatch")
+	}
+}
+
 func TestSignByLedgerCALSignature(t *testing.T) {
 	testCases := []struct {
 		apduToSign string

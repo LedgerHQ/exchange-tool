@@ -27,7 +27,16 @@ type SellDevicePayload struct {
 	DeviceTransactionId string `json:"nonce"`
 }
 
-func ConvertFileToDevicePayload[T SwapDevicePayload | SellDevicePayload](filename string) T {
+type FundDevicePayload struct {
+	UserId              string `json:"userId"`
+	AccountName         string `json:"accountName"`
+	InCurrency          string `json:"inCurrency"`
+	InAmount            uint64 `json:"inAmount"`
+	InAddress           string `json:"inAddress"`
+	DeviceTransactionId string `json:"nonce"`
+}
+
+func ConvertFileToDevicePayload[T SwapDevicePayload | SellDevicePayload | FundDevicePayload](filename string) T {
 	fileByte, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal("Error while reading payload file:", filename)

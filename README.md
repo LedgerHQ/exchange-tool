@@ -8,47 +8,62 @@ The private and public key are expected to be in ES256 format, using a secp256k1
 
 ## Usage
 ### Generate
-`./exchange-tool generate <CURVE> <PRIVATE_KEY> <PAYLOAD_JSON_FORMAT>`
+`./exchange-tool generate (swap|sell) -c <curve> -p <private_key_file> [-f (raw|jwt)] <payload_in_json_format>`
 
 Example:
 
-`./exchange-tool generate k1 ./samples/sample-priv-key-secp256k1.pem payload-example.json`
+```sh
+./exchange-tool generate swap -c k1 -p ./samples/sample-priv-key-secp256k1.pem ./samples/swap-payload-example.json
+```
 
 ### Check
-`./exchange-tool check <CURVE> <PUBLIC_KEY> <BINARY_PAYLOAD_BASE64> <SIGNATURE_BASE64>`
+`./exchange-tool check -c <curve> (-p <public_key_file> | -x <public_key_in_hex_format>) [-f (raw|jwt)] <binary_payload_in_base64> <signature_in_base64>`
 
 Example:
 
-`./exchange-tool check k1 ./samples/sample-pub-key-secp256k1.pem CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK 5-J8C2lb9bZj2yGWaNCjKyW15mDx3zaYc3u59Bag7t-G0-vjzpadZzWTHMGUJeY2IJMr5NxQV5RqdFemOvbaWQ==`
+```sh
+./exchange-tool check -c k1 -p ../samples/sample-pub-key-secp256k1.pem CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoCBH5SBgV0-95gAGIgNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs= ky2iRewy2Lbm8tR-kvnUGRKJBrUPwzQwPWWyP_xbNI3vxR9VSfdDvRW5pWEPU1nMbgJj4NuFw6WSOfEDDnupqg==
+```
 
 ### Read
-`./exchange-tool read <BINARY_PAYLOAD_BASE64>`
+`./exchange-tool read -e (swap|sell) <binary_payload_in_base64>`
 
 Example:
 
-`./exchange-tool read CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK`
+```sh
+./exchange-tool read -e swap CipiYzFxYXIwc3Jycjd4Zmt2eTVsNjQzbHlkbnc5cmU1OWd0enp3ZjVtZHEaKmJjMXFhcjBzcnJyN3hma3Z5NWw2NDNseWRudzlyZTU5Z3R6endmNHRlcSoqMHhiNzk0ZjVlYTBiYTM5NDk0Y2U4Mzk2MTNmZmZiYTc0Mjc5NTc5MjY4OgNCVENCA0JBVEoIMTIwMDAwMDBSCDExNTAwMDAwWgpBQkNERUZHSElK
+```
 
 ### Convert asn1 pubkey to hex value
-`./exchange-tool hex <PROVIDER_PUBLIC_KEY>`
+`./exchange-tool hex -c <curve> -t (private|public) <provider_public_key>`
 
 Example:
 
-`./exchange-tool hex ./samples/sample-pub-key-secp256k1.pem`
+```sh
+./exchange-tool hex -c k1 -t public ./samples/sample-pub-key-secp256k1.pem
+```
 
 ### Sign Provider
-`./exchange-tool sign <PROVIDER_NAME> <PROVIDER_PUBLIC_KEY>`
+Generate an APDU to sign by Ledger, with the provider infos (name and public key).
+
+`./exchange-tool sign -c <curve> -n <provider_name> <provider_public_key>`
 
 Example:
 
-`./exchange-tool sign SELL_TEST ./samples/sample-pub-key-secp256k1.pem`
+```sh
+./exchange-tool sign -c k1 -n SELL_TEST ./samples/sample-pub-key-secp256k1.pem
+```
 
 ### Generate CAL format for Provider info
-`./exchange-tool cal -n <PROVIDER_NAME> -c <CURVE> -p <PROVIDER_PUBLIC_KEY> -v <VERSON> -a <APPLICATION_NAME>`
+Generate 2 provider info in CAL format: one for LedgerLive (test purpose only), one for CAL (example purpose only).
 
+`./exchange-tool cal -c <curve> -n <provider_name> -p <provider_public_key> -v <version> -a <application_name>`
 
 Example:
 
-`./exchange-tool cal -c k1 -p ../sample-public-key.pem -n moonpay -v 2 -a swap`
+```sh
+./exchange-tool cal -c k1 -p ./sample-public-key.pem -n SWAP_TEST -v 2 -a swap
+```
 
 **Disclaimer**
 DO NOT USE private key provided in this repository. Their goal is for test purpose only.
@@ -79,13 +94,6 @@ To check if the code is still consistent with what is expected from Ledger:
 
   # For log info
   go test . -v
-```
-
-### Python
-```sh
-  pipenv install
-  pipenv install cryptography
-  pipenv run python swap_test.py
 ```
 
 ### Bash
@@ -131,3 +139,5 @@ With current example value
 [JWA ES256](https://www.rfc-editor.org/rfc/rfc7518#section-3.4)
 
 [DER file from RS value](https://superuser.com/questions/1653062/how-can-i-convert-my-plain-text-r-s-signature-to-a-format-that-openssl-can-ver)
+
+[CLI description](http://docopt.org/)
