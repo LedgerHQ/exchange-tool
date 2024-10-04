@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"log"
 	"math/big"
-	"strconv"
 
 	swap "exchange.ledger.fr/proto"
 	"google.golang.org/protobuf/proto"
@@ -75,15 +74,28 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 	inAmount := new(big.Int)
 	inAmount.SetBytes(message.InAmount)
 
-	outAmount, _ := strconv.ParseUint(message.OutAmount.String(), 10, 64)
+	var coefficient uint64
+	switch len(message.OutAmount.Coefficient) {
+	case 2:
+		coefficient = uint64(binary.BigEndian.Uint16(message.OutAmount.Coefficient))
+	case 4:
+		coefficient = uint64(binary.BigEndian.Uint32(message.OutAmount.Coefficient))
+	case 8:
+		coefficient = binary.BigEndian.Uint64(message.OutAmount.Coefficient)
+	default:
+		log.Fatalln("Incorrect Coefficient size:", len(message.OutAmount.Coefficient))
+	}
 
 	return SellDevicePayload{
-		TraderEmail:         message.TraderEmail,
-		InCurrency:          message.InCurrency,
-		InAmount:            inAmount.Uint64(),
-		InAddress:           message.InAddress,
-		OutCurrency:         message.OutCurrency,
-		OutAmount:           outAmount,
+		TraderEmail: message.TraderEmail,
+		InCurrency:  message.InCurrency,
+		InAmount:    inAmount.Uint64(),
+		InAddress:   message.InAddress,
+		OutCurrency: message.OutCurrency,
+		OutAmount: Decimal{
+			Coefficient: coefficient,
+			Exponent:    message.OutAmount.GetExponent(),
+		},
 		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionId),
 	}
 }
@@ -94,7 +106,7 @@ func convertSellDevicePaylod(payload SellDevicePayload) swap.NewSellResponse {
 	nonce, _ := hex.DecodeString(payload.DeviceTransactionId)
 
 	outAmount := swap.UDecimal{
-		Coefficient: binary.BigEndian.AppendUint64([]byte{}, payload.OutAmount),
+		Coefficient: binary.BigEndian.AppendUint64([]byte{}, payload.OutAmount.Coefficient),
 		Exponent:    2,
 	}
 
