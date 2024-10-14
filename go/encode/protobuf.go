@@ -38,6 +38,7 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 
 	return SwapDevicePayload{
 		PayinAddress:          message.PayinAddress,
+		PayinExtraData:        hex.EncodeToString(message.PayinExtraData),
 		RefundAddress:         message.RefundAddress,
 		PayoutAddress:         message.PayoutAddress,
 		CurrencyFrom:          message.CurrencyFrom,
@@ -46,7 +47,6 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 		AmountToWallet:        walletAmount.Uint64(),
 		DeviceTransactionId:   message.DeviceTransactionId,
 		DeviceTransactionIdNg: hex.EncodeToString(message.DeviceTransactionIdNg),
-		PayinExtraData:        hex.EncodeToString(message.PayinExtraData),
 	}
 }
 
