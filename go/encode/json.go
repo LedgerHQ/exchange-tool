@@ -8,6 +8,7 @@ import (
 
 type SwapDevicePayload struct {
 	PayinAddress          string `json:"payinAddress"`
+	PayinExtraData        string `json:"payinExtraData"`
 	RefundAddress         string `json:"refundAddress"`
 	PayoutAddress         string `json:"payoutAddress"`
 	CurrencyFrom          string `json:"currencyFrom"`
@@ -16,7 +17,6 @@ type SwapDevicePayload struct {
 	AmountToWallet        uint64 `json:"amountToWallet"`
 	DeviceTransactionId   string `json:"nonce"`
 	DeviceTransactionIdNg string `json:"deviceTransactionIdNg"`
-	PayinExtraData        string `json:"payinExtraData"`
 }
 
 type Decimal struct {
