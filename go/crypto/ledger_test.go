@@ -3,7 +3,6 @@ package crypto
 import (
 	"encoding/hex"
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -148,7 +147,6 @@ func TestSignByLedger_FromJS_SwapApduSigned(t *testing.T) {
 }
 
 func TestCoinConfig(t *testing.T) {
-	ethUnit, _ := hex.DecodeString(fmt.Sprintf("%02x", len("ETH")) + hex.EncodeToString([]byte("ETH")) + fmt.Sprintf("%x", 18))
 	testCases := []struct {
 		config       CoinConfig
 		expectedHash string
@@ -157,7 +155,7 @@ func TestCoinConfig(t *testing.T) {
 			CoinConfig{
 				"BTC",
 				"Bitcoin",
-				make([]byte, 0),
+				nil,
 			},
 			"0342544307426974636f696e00",
 		},
@@ -165,31 +163,58 @@ func TestCoinConfig(t *testing.T) {
 			CoinConfig{
 				"ETH",
 				"Ethereum",
-				ethUnit,
+				&SubConfig{
+					"ETH",
+					18,
+					0,
+				},
 			},
 			"0345544808457468657265756d050345544812",
 		},
-		// {
-		// 	CoinConfig{
-		// 		"TON",
-		// 		"TON",
-		// 		make([]byte, 0),
-		// 	},
-		// 	"0345544808457468657265756d050345544812",
-		// },
+		{
+			CoinConfig{
+				"TON",
+				"TON",
+				nil,
+			},
+			"03544f4e03544f4e00",
+		},
+		// "ethereum/erc20/usd_tether__erc20_",
+		// "045553445408457468657265756d06045553445406",
+		{
+			CoinConfig{
+				"USDT",
+				"Ethereum",
+				&SubConfig{
+					"USDT",
+					6,
+					0,
+				},
+			},
+			"045553445408457468657265756d06045553445406",
+		},
+		{
+			CoinConfig{
+				"AVAX",
+				"Ethereum",
+				&SubConfig{
+					"AVAX",
+					18,
+					43114,
+				},
+			},
+			"044156415808457468657265756d0e044156415812000000000000a86a",
+		},
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprint(tc.config.appName), func(t *testing.T) {
+		t.Run(fmt.Sprint(tc.config.Ticker, tc.config.AppName), func(t *testing.T) {
 			// serialized_config
-			serialized, signature := GenerateCoinConfig(tc.config)
-			log.Println("CoinConfig:", serialized, "\n", signature)
+			serialized, _ := GenerateCoinConfig(tc.config)
 
 			if serialized != tc.expectedHash {
 				t.Fatal("Serialization \nexpected:\t", tc.expectedHash, "\ngot:\t\t", serialized)
 			}
-
-			log.Println("CoinConfig signature:", signature)
 		})
 	}
 }

@@ -37,34 +37,42 @@ func SignProviderInfo(providerName string, pubKey string, curve Curve, version u
 	return msg, hex.EncodeToString(signature)
 }
 
+type SubConfig struct {
+	Ticker    string
+	Magnitude uint8
+	ChainId   uint16
+}
 type CoinConfig struct {
-	ticker  string
-	appName string
-	config  []byte
+	Ticker    string
+	AppName   string
+	SubConfig *SubConfig
 }
 
 // Generate CAL info for currency
 // Returns an hash and its signature
 func GenerateCoinConfig(coin CoinConfig) (string, string) {
-	/*
-			const payload = Buffer.concat([Buffer.from([ticker.length]), Buffer.from(ticker),
-		                                   Buffer.from([applicationName.length]), Buffer.from(applicationName),
-		                                   Buffer.from([coinConfig.length]), coinConfig]);
-			const hash = Buffer.from(sha256.sha256.array(payload));
-			const signature = secp256k1.sign(hash, ledgerPrivateKey).signature;
-			const der = secp256k1.signatureExport(signature);
-			return { "coinConfig": payload, "signature": der };
-	*/
-	/*
-		"bitcoin",
-		"0342544307426974636f696e00",
-		"3045022100cb174382302219dca359c0a4d457b2569e31a06b2c25c0088a2bd3fd6c04386a02202c6d0a5b924a414621067e316f021aa13aa5b2eee2bf36ea3cfddebc053b201b"
-	*/
+	// SubConfig
+	// if coin.appName == "Ethereum" && coin.subConfig.chainId == 0 {
+	// 	log.Fatalln("ChainId required with Ethereum app")
+	// }
+
+	subConfig := make([]byte, 0)
+	if coin.SubConfig != nil {
+		if coin.SubConfig.ChainId == 0 {
+			subConfig, _ = hex.DecodeString(
+				fmt.Sprintf("%02x", len(coin.SubConfig.Ticker)) + hex.EncodeToString([]byte(coin.SubConfig.Ticker)) + fmt.Sprintf("%02x", coin.SubConfig.Magnitude),
+			)
+		} else {
+			subConfig, _ = hex.DecodeString(
+				fmt.Sprintf("%02x", len(coin.SubConfig.Ticker)) + hex.EncodeToString([]byte(coin.SubConfig.Ticker)) + fmt.Sprintf("%02x", coin.SubConfig.Magnitude) + fmt.Sprintf("%016x", coin.SubConfig.ChainId),
+			)
+		}
+	}
 
 	// serialized_config
-	serialized := fmt.Sprintf("%02x", len(coin.ticker)) + hex.EncodeToString([]byte(coin.ticker)) +
-		fmt.Sprintf("%02x", len(coin.appName)) + hex.EncodeToString([]byte(coin.appName)) +
-		fmt.Sprintf("%02x", len(coin.config)) + hex.EncodeToString(coin.config)
+	serialized := fmt.Sprintf("%02x", len(coin.Ticker)) + hex.EncodeToString([]byte(coin.Ticker)) +
+		fmt.Sprintf("%02x", len(coin.AppName)) + hex.EncodeToString([]byte(coin.AppName)) +
+		fmt.Sprintf("%02x", len(subConfig)) + hex.EncodeToString(subConfig)
 
 	// Sign process
 	configByte, _ := hex.DecodeString(serialized)

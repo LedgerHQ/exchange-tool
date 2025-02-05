@@ -38,8 +38,11 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 
 	return SwapDevicePayload{
 		PayinAddress:        message.PayinAddress,
+		PayinExtraId:        message.PayinExtraId,
 		RefundAddress:       message.RefundAddress,
+		RefundExtraId:       message.RefundExtraId,
 		PayoutAddress:       message.PayoutAddress,
+		PayoutExtraId:       message.PayoutExtraId,
 		CurrencyFrom:        message.CurrencyFrom,
 		CurrencyTo:          message.CurrencyTo,
 		AmountToProvider:    providerAmount.Uint64(),
@@ -57,8 +60,11 @@ func convertSwapDevicePaylod(payload SwapDevicePayload) swap.NewTransactionRespo
 
 	return swap.NewTransactionResponse{
 		PayinAddress:          payload.PayinAddress,
+		PayinExtraId:          payload.PayinExtraId,
 		RefundAddress:         payload.RefundAddress,
+		RefundExtraId:         payload.RefundExtraId,
 		PayoutAddress:         payload.PayoutAddress,
+		PayoutExtraId:         payload.PayoutExtraId,
 		CurrencyFrom:          payload.CurrencyFrom,
 		CurrencyTo:            payload.CurrencyTo,
 		AmountToProvider:      bigNumberToProvider.Bytes(),

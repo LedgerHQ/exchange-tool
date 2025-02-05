@@ -8,8 +8,11 @@ import (
 
 type SwapDevicePayload struct {
 	PayinAddress        string `json:"payinAddress"`
+	PayinExtraId        string `json:"payinExtraId"`
 	RefundAddress       string `json:"refundAddress"`
+	RefundExtraId       string `json:"refundExtraId"`
 	PayoutAddress       string `json:"payoutAddress"`
+	PayoutExtraId       string `json:"payoutExtraId"`
 	CurrencyFrom        string `json:"currencyFrom"`
 	CurrencyTo          string `json:"currencyTo"`
 	AmountToProvider    uint64 `json:"amountToProvider"`

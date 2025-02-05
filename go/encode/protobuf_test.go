@@ -14,7 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func TestConvertToSellProtobuf(t *testing.T) {
+func TestSell_EncodeToProtobuf(t *testing.T) {
 	// Given
 	payload := encode.SellDevicePayload{
 		TraderEmail: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
@@ -42,7 +42,7 @@ func TestConvertToSellProtobuf(t *testing.T) {
 	}
 }
 
-func TestConvertProtobufToSell(t *testing.T) {
+func TestSell_DecodeProtobuf(t *testing.T) {
 	firstPayload, _ := hex.DecodeString("0a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766356d647112034254431a02047e222a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766347465712a03455552320c0a08000000000000000c10023a20350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b")
 	secondPayload, _ := encode.CascadeDecodeBase64("Cg50ZXN0QGxlZGdlci5mchIDRVRIGgg5LS4r2pwAACIqMHhkNjkyQ2IxMzQ2MjYyRjU4NEQxN0I0QjQ3MDk1NDUwMWY2NzE1YTgyKgNFVVIyDAoIAAAAAAAABNIQAjogNQrqDJf3R_HQ92CBRhSkdSOAGxrrfQvLuqKk9Gv4GEs")
 	thirdPayload, _ := encode.CascadeDecodeBase64("ChticmViYW4uc2VyZ2l1LWV4dEBsZWRnZXIuZnISA0JUQxoDBwTgIiMyTXhEeGh6OXJmZ3JSRjFreHgzdE1vNFlYaENzYTkxdXFmWioDRVVSMgYKAlz5EAI6IDUK6gyX90fx0PdggUYUpHUjgBsa630Ly7qipPRr-BhL")
@@ -180,7 +180,7 @@ func TestPartnerInput(t *testing.T) {
 	}
 }
 
-func TestConvertToSwapProtobuf(t *testing.T) {
+func TestSwap_EncodeToProtobuf(t *testing.T) {
 	// Given
 	payload := encode.SwapDevicePayload{
 		PayinAddress:        "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
@@ -205,30 +205,69 @@ func TestConvertToSwapProtobuf(t *testing.T) {
 	}
 }
 
-func TestConvertProtobufToSwap(t *testing.T) {
+func TestSwap_DecodeProtobuf(t *testing.T) {
+	testCase := []struct {
+		protobuf        string
+		expectedPayload encode.SwapDevicePayload
+	}{
+		{
+			"0a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766356d64711a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766347465712a2a3078623739346635656130626133393439346365383339363133666666626137343237393537393236383a0342544342034241544a02047e52060574fbde60006220350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+			encode.SwapDevicePayload{
+				PayinAddress:        "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+				RefundAddress:       "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf4teq",
+				PayoutAddress:       "0xb794f5ea0ba39494ce839613fffba74279579268",
+				CurrencyFrom:        "BTC",
+				CurrencyTo:          "BAT",
+				AmountToProvider:    1150,
+				AmountToWallet:      6000000000000,
+				DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+			},
+		},
+	}
+
+	for _, tc := range testCase {
+		t.Run("Simple Example", func(t *testing.T) {
+			// Given
+			bin, _ := hex.DecodeString(tc.protobuf)
+
+			// When
+			payload := encode.DecodeSwapProtobuf(bin)
+
+			// Then
+			if payload != tc.expectedPayload {
+				t.Fatalf("Incorrect decoded payload.\nExpected: %v\nResult: %v", tc.expectedPayload, payload)
+			}
+		})
+	}
+}
+
+func TestConvertProtobufV1ToSwap(t *testing.T) {
 	// Given
-	bin, _ := hex.DecodeString("0a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766356d64711a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766347465712a2a3078623739346635656130626133393439346365383339363133666666626137343237393537393236383a0342544342034241544a02047e52060574fbde60006220350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b")
+	bin, _ := hex.DecodeString("0a2a3078396462376462633136313332386635323563326661623163353936323531643833323933666438341a2a3078363663343337316145384646654432656331633245426262634366623745343934313831453145332a2c36706f356537416f6462423467464b517841424763554c777435767638395432475a6275315146576a3932523a034554484204555344434a10000000000000000000fac2c609b788005210000000000000000000000005d3bd008c5a0a51515151515151515151")
 
 	// When
 	payload := encode.DecodeSwapProtobuf(bin)
 
 	// Then
 	expectedPayload := encode.SwapDevicePayload{
-		PayinAddress:        "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
-		RefundAddress:       "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf4teq",
-		PayoutAddress:       "0xb794f5ea0ba39494ce839613fffba74279579268",
-		CurrencyFrom:        "BTC",
-		CurrencyTo:          "BAT",
-		AmountToProvider:    1150,
-		AmountToWallet:      6000000000000,
-		DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+		PayinAddress:        "0x9db7dbc161328f525c2fab1c596251d83293fd84",
+		PayinExtraId:        "",
+		RefundAddress:       "0x66c4371aE8FFeD2ec1c2EBbbcCfb7E494181E1E3",
+		RefundExtraId:       "",
+		PayoutAddress:       "6po5e7AodbB4gFKQxABGcULwt5vv89T2GZbu1QFWj92R",
+		PayoutExtraId:       "",
+		CurrencyFrom:        "ETH",
+		CurrencyTo:          "USDC",
+		AmountToProvider:    70582900000000000,
+		AmountToWallet:      25027215500,
+		DeviceTransactionId: "",
 	}
 	if payload != expectedPayload {
 		t.Fatalf("Incorrect decoded payload.\nExpected: %v\nResult: %v", expectedPayload, payload)
 	}
 }
 
-func TestConvertToFundProtobuf(t *testing.T) {
+func TestFund_EncodeToProtobuf(t *testing.T) {
 	// Given
 	payload := encode.FundDevicePayload{
 		UserId:              "12343456",
@@ -251,7 +290,7 @@ func TestConvertToFundProtobuf(t *testing.T) {
 	}
 }
 
-func TestConvertProtobufToFund(t *testing.T) {
+func TestFund_DecodeProtobuf(t *testing.T) {
 	// Given
 	bin, _ := hex.DecodeString("0a08313233343334353612084a6f686e20446f651a034254432202047e2a2a62633171617230737272723778666b7679356c3634336c79646e77397265353967747a7a7766347465713220350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b")
 

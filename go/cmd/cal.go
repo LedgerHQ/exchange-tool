@@ -9,22 +9,61 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var CalCmd = &cobra.Command{
-	Use:   "cal",
-	Short: "Generate CAL info for given provider",
-	Run:   cal,
-}
+var (
+	CalCmd = &cobra.Command{
+		Use:   "cal",
+		Short: "Generate CAL info like",
+	}
+
+	mockCalCmd = &cobra.Command{
+		Use:   "cal",
+		Short: "Generate CAL info for given provider in strict CAL format",
+		Run:   cal,
+	}
+
+	liveCalCmd = &cobra.Command{
+		Use:   "live",
+		Short: "Generate CAL info for given provider in LLD compact format",
+		Long:  "Generate CAL info for given provider in LLD compact format. This format is used for swap test to set a mock provider",
+		Run:   live,
+	}
+
+	coinCalCmd = &cobra.Command{
+		Use:   "coin",
+		Short: "Generate CAL info for a coin",
+		Run:   coin,
+	}
+)
 
 func init() {
-	CalCmd.Flags().StringP("curve", "c", "", "Curve of provder's pubkey: k1 or r1")
-	CalCmd.Flags().StringP("public", "p", "", "Public key file")
-	CalCmd.Flags().StringP("name", "n", "", "Provider's name")
-	CalCmd.Flags().UintP("version", "v", 2, "app-exchange version signaure (1 or 2)")
-	CalCmd.Flags().StringP("app-name", "a", "swap", "application name")
-	CalCmd.MarkFlagRequired("curve")
-	CalCmd.MarkFlagRequired("public")
-	CalCmd.MarkFlagRequired("name")
-	CalCmd.MarkFlagRequired("version")
+	CalCmd.AddCommand(mockCalCmd, liveCalCmd, coinCalCmd)
+
+	mockCalCmd.Flags().StringP("curve", "c", "", "Curve of provder's pubkey: k1 or r1")
+	mockCalCmd.Flags().StringP("public", "p", "", "Public key file")
+	mockCalCmd.Flags().StringP("name", "n", "", "Provider's name")
+	mockCalCmd.Flags().UintP("version", "v", 2, "app-exchange version signaure (1 or 2)")
+	mockCalCmd.Flags().StringP("app-name", "a", "swap", "application name")
+	mockCalCmd.MarkFlagRequired("curve")
+	mockCalCmd.MarkFlagRequired("public")
+	mockCalCmd.MarkFlagRequired("name")
+	mockCalCmd.MarkFlagRequired("version")
+
+	liveCalCmd.Flags().StringP("curve", "c", "", "Curve of provder's pubkey: k1 or r1")
+	liveCalCmd.Flags().StringP("public", "p", "", "Public key file")
+	liveCalCmd.Flags().StringP("name", "n", "", "Provider's name")
+	liveCalCmd.Flags().UintP("version", "v", 2, "app-exchange version signaure (1 or 2)")
+	liveCalCmd.Flags().StringP("app-name", "a", "swap", "application name")
+	liveCalCmd.MarkFlagRequired("curve")
+	liveCalCmd.MarkFlagRequired("public")
+	liveCalCmd.MarkFlagRequired("name")
+	liveCalCmd.MarkFlagRequired("version")
+
+	coinCalCmd.Flags().StringP("ticker", "t", "", "Coin's ticker")
+	coinCalCmd.Flags().StringP("application", "a", "", "AppCoin name (beware of the case)")
+	coinCalCmd.Flags().UintP("magnitude", "m", 0, "Coin's magnitude")
+	coinCalCmd.Flags().UintP("chain Id", "c", 0, "In EVM cases only")
+	coinCalCmd.MarkFlagRequired("ticker")
+	coinCalCmd.MarkFlagRequired("application")
 }
 
 func convertCalParameter(cmd *cobra.Command) *params {
@@ -43,15 +82,52 @@ func convertCalParameter(cmd *cobra.Command) *params {
 	}
 }
 
+func common(cmd *cobra.Command) encode.CalInfo {
+	params := convertCalParameter(cmd)
+
+	return generateCal(params.curve, params.pemFile, params.providerName, params.version, params.appName)
+}
+
 func cal(cmd *cobra.Command, args []string) {
 	fmt.Println("*** Generate CAL format info ***")
 
-	params := convertCalParameter(cmd)
+	calInfo := common(cmd)
 
-	calInfo := generateCal(params.curve, params.pemFile, params.providerName, params.version, params.appName)
+	fmt.Println("--> CAL format:\n", calInfo.CalFormat())
+}
+
+func live(cmd *cobra.Command, args []string) {
+	fmt.Println("*** Generate CAL info in Live info ***")
+
+	calInfo := common(cmd)
 
 	fmt.Println("--> Ledger Live format:\n", calInfo.String())
-	fmt.Println("--> CAL format:\n", calInfo.CalFormat())
+}
+
+func coin(cmd *cobra.Command, args []string) {
+	fmt.Println("*** Generate CAL format info ***")
+
+	app := cmd.Flags().Lookup("application").Value.String()
+	ticker := cmd.Flags().Lookup("ticker").Value.String()
+	magnitude, _ := cmd.Flags().GetUint("magnitude")
+	chainId, _ := cmd.Flags().GetUint("chain Id")
+
+	var subConfig *crypto.SubConfig = nil
+	if magnitude != 0 {
+		subConfig = &crypto.SubConfig{
+			Ticker:    ticker,
+			Magnitude: uint8(magnitude),
+			ChainId:   uint16(chainId),
+		}
+	}
+
+	serialized, _ := crypto.GenerateCoinConfig(crypto.CoinConfig{
+		Ticker:    ticker,
+		AppName:   app,
+		SubConfig: subConfig,
+	})
+
+	fmt.Println("--> CAL Coin format:\n", serialized)
 }
 
 func generateCal(curve crypto.Curve, filename string, providerName string, version uint, appName string) encode.CalInfo {
