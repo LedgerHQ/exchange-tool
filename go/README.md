@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2024 Ledger
+
+SPDX-License-Identifier: Apache-2.0
+-->
 # Go exchange-tool
 
 ## Compilation

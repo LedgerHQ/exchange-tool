@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 Ledger
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import sys
 import base64
 from cryptography.hazmat.primitives import serialization, hashes

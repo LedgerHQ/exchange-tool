@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Ledger
+# SPDX-License-Identifier: Apache-2.0
+
 build:
 	go mod tidy
 	GOOS=darwin GOARCH=arm64 go build -o bin/exchange-tool-mac-arm64 .

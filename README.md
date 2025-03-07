@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2024 Ledger
+
+SPDX-License-Identifier: Apache-2.0
+-->
 # Exchange Tool
 This repo contains a suit of tools for testing, generating data and cross checking against different tech env.
 

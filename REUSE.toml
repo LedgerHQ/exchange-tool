@@ -1,0 +1,6 @@
+version = 1
+
+[[annotations]]
+path = ["samples/*", "**/*.lock", "**/*.sum", "**/*.yaml"]
+SPDX-FileCopyrightText = "2024 Ledger"
+SPDX-License-Identifier = "Apache-2.0"

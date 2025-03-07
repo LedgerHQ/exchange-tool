@@ -17,6 +17,10 @@
  *  under the License.
  */
 
+// SPDX-FileCopyrightText: 2024 Ledger
+//
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (

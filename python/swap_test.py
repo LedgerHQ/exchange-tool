@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 Ledger
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from cryptography.hazmat.primitives.asymmetric import ec
 from swap import sign_payload, check_signature
 
