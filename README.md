@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024 Ledger
+SPDX-FileCopyrightText: Ledger SAS 2024
 
 SPDX-License-Identifier: Apache-2.0
 -->
