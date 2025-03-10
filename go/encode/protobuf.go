@@ -35,6 +35,11 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 	message := swap.NewTransactionResponse{}
 	proto.Unmarshal(payload, &message)
 
+	nonce := hex.EncodeToString(message.DeviceTransactionIdNg)
+	if len(nonce) != 64 {
+		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.")
+	}
+
 	providerAmount := new(big.Int)
 	providerAmount.SetBytes(message.AmountToProvider)
 	walletAmount := new(big.Int)
@@ -51,7 +56,7 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 		CurrencyTo:          message.CurrencyTo,
 		AmountToProvider:    providerAmount.Uint64(),
 		AmountToWallet:      walletAmount.Uint64(),
-		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionIdNg),
+		DeviceTransactionId: nonce,
 	}
 }
 
@@ -81,6 +86,11 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 	message := swap.NewSellResponse{}
 	proto.Unmarshal(payload, &message)
 
+	nonce := hex.EncodeToString(message.DeviceTransactionId)
+	if len(nonce) != 64 {
+		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.")
+	}
+
 	inAmount := new(big.Int)
 	inAmount.SetBytes(message.InAmount)
 
@@ -106,7 +116,7 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 			Coefficient: coefficient,
 			Exponent:    message.OutAmount.GetExponent(),
 		},
-		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionId),
+		DeviceTransactionId: nonce,
 	}
 }
 
@@ -135,6 +145,11 @@ func DecodeFundProtobuf(payload []byte) FundDevicePayload {
 	message := swap.NewFundResponse{}
 	proto.Unmarshal(payload, &message)
 
+	nonce := hex.EncodeToString(message.DeviceTransactionId)
+	if len(nonce) != 64 {
+		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.")
+	}
+
 	inAmount := new(big.Int)
 	inAmount.SetBytes(message.InAmount)
 
@@ -144,7 +159,7 @@ func DecodeFundProtobuf(payload []byte) FundDevicePayload {
 		InCurrency:          message.InCurrency,
 		InAmount:            inAmount.Uint64(),
 		InAddress:           message.InAddress,
-		DeviceTransactionId: hex.EncodeToString(message.DeviceTransactionId),
+		DeviceTransactionId: nonce,
 	}
 }
 
