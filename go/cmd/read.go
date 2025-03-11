@@ -37,9 +37,14 @@ func read(cmd *cobra.Command, args []string) {
 func readPayload(payload string, exchangeType string) (string, encode.Base64Format) {
 	payloadByte, format := encode.CascadeDecodeBase64(payload)
 	log.Println("Read results:\n", payloadByte, "\n", format)
-	payloadFormatted := encode.DecodeSwapProtobuf(payloadByte).String()
-	if exchangeType == "sell" {
+	var payloadFormatted string
+	switch exchangeType {
+	case "sell":
 		payloadFormatted = encode.DecodeSellProtobuf(payloadByte).String()
+	// case "fund":
+	// 	payloadFormatted = encode.DecodeFundProtobuf(payloadByte).String()
+	default:
+		payloadFormatted = encode.DecodeSwapProtobuf(payloadByte).String()
 	}
 
 	return payloadFormatted, format
