@@ -24,7 +24,7 @@
 syntax = "proto3";
 package ledger_swap;
 
-option go_package = "swap.ledger.fr/proto";
+option go_package = ".";
 
 message NewTransactionResponse {
     string payin_address = 1;
@@ -56,6 +56,7 @@ message NewSellResponse {
     string   out_currency = 5;           // outCurrency
     UDecimal out_amount = 6;             // outAmount
     bytes    device_transaction_id = 7;  // nonce
+    string   in_extra_id = 8;            // memo
 }
 
 message NewFundResponse {

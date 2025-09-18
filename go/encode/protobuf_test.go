@@ -31,6 +31,7 @@ func TestSell_EncodeToProtobuf(t *testing.T) {
 			Exponent:    2,
 		},
 		DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+		InExtraId:           "",
 	}
 
 	// When
@@ -71,6 +72,7 @@ func TestSell_DecodeProtobuf(t *testing.T) {
 					Exponent:    2,
 				},
 				DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+				InExtraId:           "",
 			},
 		},
 		{
@@ -86,6 +88,7 @@ func TestSell_DecodeProtobuf(t *testing.T) {
 					Exponent:    2,
 				},
 				DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+				InExtraId:           "",
 			},
 		},
 		{
@@ -101,6 +104,7 @@ func TestSell_DecodeProtobuf(t *testing.T) {
 					Exponent:    2,
 				},
 				DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+				InExtraId:           "",
 			},
 		},
 		{
@@ -116,6 +120,7 @@ func TestSell_DecodeProtobuf(t *testing.T) {
 					Exponent:    2,
 				},
 				DeviceTransactionId: "",
+				InExtraId:           "",
 			},
 		},
 	}
@@ -178,6 +183,7 @@ func TestPartnerInput(t *testing.T) {
 			Exponent:    2,
 		},
 		DeviceTransactionId: "350aea0c97f747f1d0f760814614a47523801b1aeb7d0bcbbaa2a4f46bf8184b",
+		InExtraId:           "",
 	}
 	if payload != expectedPayload {
 		t.Fatalf("Incorrect decoded payload.\nExpected: %v\nResult: %v", expectedPayload, payload)

@@ -36,7 +36,7 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 	proto.Unmarshal(payload, &message)
 
 	nonce := hex.EncodeToString(message.DeviceTransactionIdNg)
-	if len(nonce) != 64 || len(nonce) != 10 {
+	if len(nonce) != 64 && len(nonce) != 0 {
 		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.\nNonce value received:", nonce)
 	}
 
@@ -87,7 +87,7 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 	proto.Unmarshal(payload, &message)
 
 	nonce := hex.EncodeToString(message.DeviceTransactionId)
-	if len(nonce) != 64 {
+	if len(nonce) != 64 && len(nonce) != 0 {
 		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.\nNonce value received:", nonce)
 	}
 
@@ -117,6 +117,7 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 			Exponent:    message.OutAmount.GetExponent(),
 		},
 		DeviceTransactionId: nonce,
+		InExtraId:           message.InExtraId,
 	}
 }
 
@@ -138,6 +139,7 @@ func convertSellDevicePaylod(payload SellDevicePayload) swap.NewSellResponse {
 		OutCurrency:         payload.OutCurrency,
 		OutAmount:           &outAmount,
 		DeviceTransactionId: nonce,
+		InExtraId:           payload.InExtraId,
 	}
 }
 
