@@ -36,6 +36,7 @@ type SellDevicePayload struct {
 	OutCurrency         string  `json:"outCurrency"`
 	OutAmount           Decimal `json:"outAmount"`
 	DeviceTransactionId string  `json:"nonce"`
+	InExtraId           string  `json:"inExtraId"`
 }
 
 type FundDevicePayload struct {
