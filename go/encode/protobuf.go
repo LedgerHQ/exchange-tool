@@ -36,8 +36,8 @@ func DecodeSwapProtobuf(payload []byte) SwapDevicePayload {
 	proto.Unmarshal(payload, &message)
 
 	nonce := hex.EncodeToString(message.DeviceTransactionIdNg)
-	if len(nonce) != 64 && len(nonce) != 10 {
-		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.\nNonce value received:", nonce)
+	if len(nonce) != 0 && len(nonce) != 64 && len(nonce) != 10 {
+		log.Printf("Incorrect nonce size. Nonce value received: %s (length: %d)\n", nonce, len(nonce))
 	}
 
 	providerAmount := new(big.Int)
@@ -87,8 +87,8 @@ func DecodeSellProtobuf(payload []byte) SellDevicePayload {
 	proto.Unmarshal(payload, &message)
 
 	nonce := hex.EncodeToString(message.DeviceTransactionId)
-	if len(nonce) != 64 && len(nonce) != 0 {
-		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.\nNonce value received:", nonce)
+	if len(nonce) != 0 && len(nonce) != 64 {
+		log.Printf("Incorrect nonce size. Nonce value received: %s (length: %d)\n", nonce, len(nonce))
 	}
 
 	inAmount := new(big.Int)
@@ -148,8 +148,8 @@ func DecodeFundProtobuf(payload []byte) FundDevicePayload {
 	proto.Unmarshal(payload, &message)
 
 	nonce := hex.EncodeToString(message.DeviceTransactionId)
-	if len(nonce) != 64 {
-		log.Fatalln("Incorrect nonce size. Check nonce value received has been first hex format decoded before setting in protobuf message.\nNonce value received:", nonce)
+	if len(nonce) != 0 && len(nonce) != 64 {
+		log.Printf("Incorrect nonce size. Nonce value received: %s (length: %d)\n", nonce, len(nonce))
 	}
 
 	inAmount := new(big.Int)
