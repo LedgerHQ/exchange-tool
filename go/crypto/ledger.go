@@ -68,7 +68,7 @@ func GenerateCoinConfig(coin CoinConfig) (string, string) {
 			)
 		} else {
 			subConfig, _ = hex.DecodeString(
-				fmt.Sprintf("%02x", len(coin.SubConfig.Ticker)) + hex.EncodeToString([]byte(coin.SubConfig.Ticker)) + fmt.Sprintf("%02x", coin.SubConfig.Magnitude) + fmt.Sprintf("%016x", coin.SubConfig.ChainId),
+				fmt.Sprintf("%02x", len(coin.SubConfig.Ticker)) + hex.EncodeToString([]byte(coin.SubConfig.Ticker)) + fmt.Sprintf("%02x", coin.SubConfig.Magnitude) + fmt.Sprintf("%04x", coin.SubConfig.ChainId),
 			)
 		}
 	}
