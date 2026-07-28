@@ -45,6 +45,7 @@ type FundDevicePayload struct {
 	InCurrency          string `json:"inCurrency"`
 	InAmount            uint64 `json:"inAmount"`
 	InAddress           string `json:"inAddress"`
+	InExtraId           string `json:"inExtraId"`
 	DeviceTransactionId string `json:"nonce"`
 }
 
@@ -69,6 +70,11 @@ func (p SwapDevicePayload) String() string {
 }
 
 func (p SellDevicePayload) String() string {
+	jsonValue, _ := json.Marshal(p)
+	return string(jsonValue)
+}
+
+func (p FundDevicePayload) String() string {
 	jsonValue, _ := json.Marshal(p)
 	return string(jsonValue)
 }

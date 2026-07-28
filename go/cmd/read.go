@@ -41,8 +41,8 @@ func readPayload(payload string, exchangeType string) (string, encode.Base64Form
 	switch exchangeType {
 	case "sell":
 		payloadFormatted = encode.DecodeSellProtobuf(payloadByte).String()
-	// case "fund":
-	// 	payloadFormatted = encode.DecodeFundProtobuf(payloadByte).String()
+	case "fund":
+		payloadFormatted = encode.DecodeFundProtobuf(payloadByte).String()
 	default:
 		payloadFormatted = encode.DecodeSwapProtobuf(payloadByte).String()
 	}
