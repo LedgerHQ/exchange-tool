@@ -161,6 +161,7 @@ func DecodeFundProtobuf(payload []byte) FundDevicePayload {
 		InCurrency:          message.InCurrency,
 		InAmount:            inAmount.Uint64(),
 		InAddress:           message.InAddress,
+		InExtraId:           message.InExtraId,
 		DeviceTransactionId: nonce,
 	}
 }
@@ -176,6 +177,7 @@ func convertFundDevicePaylod(payload FundDevicePayload) swap.NewFundResponse {
 		InCurrency:          payload.InCurrency,
 		InAmount:            bigNumberIntAmount.Bytes(),
 		InAddress:           payload.InAddress,
+		InExtraId:           payload.InExtraId,
 		DeviceTransactionId: nonce,
 	}
 }
